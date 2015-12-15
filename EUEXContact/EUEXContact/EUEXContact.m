@@ -93,7 +93,20 @@
 -(void)addItem:(NSMutableArray *)inArguments {
     if ([self check_Authorization]) {
         actionArray = [[NSArray alloc] initWithArray:inArguments];
-        [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:111];
+        NSDictionary *isNeedAlert=[inArguments[3] JSONValue];
+        BOOL isNeedAlertDialog;
+        if(isNeedAlert){
+            isNeedAlertDialog=[[isNeedAlert objectForKey:@"isNeedAlertDialog"] boolValue];
+        }
+        else{
+            isNeedAlertDialog=YES;
+        }
+        if(isNeedAlertDialog){
+            [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:111];
+        }
+        else{
+            [self addItemWithName:[actionArray objectAtIndex:0] phoneNum:[actionArray objectAtIndex:1] phoneEmail:[actionArray objectAtIndex:2]];
+        }
     }else{
         [self showAlertViewMessage];
     }
@@ -167,31 +180,36 @@
 -(void)searchItem:(NSMutableArray *)inArguments {
     if ([self check_Authorization]) {
         NSString * inName = [inArguments objectAtIndex:0];
+        NSDictionary *option=[[inArguments objectAtIndex:1] JSONValue];
+        int resultNum=[[option objectForKey:@"resultNum"] intValue];
         if (0 == [inName length]) {//传入名字为空时，就查找所有联系人
             NSMutableArray * array = [contact searchItem_all];
             if ([array isKindOfClass:[NSMutableArray class]] && [array count] > 0) {
                 int count = (int)[array count];
-                int num = (0 == count % 50)?count/50:count/50 + 1;
-                for (int i = 0; i < num; i ++) {
-                    NSRange range;
-                    if (num == i + 1) {
-                        range = NSMakeRange(i * 50, count - i * 50);
+                NSRange range;
+                if (resultNum >0) {
+                    range = NSMakeRange(0, resultNum);
+                }
+                else if (resultNum == -1) {
+                    range = NSMakeRange(0, count);
+                }
+                else{
+                    range = NSMakeRange(0, 50);
+                }
+                NSArray * subArray = [array subarrayWithRange:range];
+                if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
+                    NSString * jsonResult = [subArray JSONFragment];
+                    if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
+                        //处理换行符；
+                        //jsonResult=[jsonResult stringByReplacingOccurrencesOfString:@"\\n" withString:@" "];
+                        [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
                     } else {
-                        range = NSMakeRange(i * 50, 50);
-                    }
-                    NSArray * subArray = [array subarrayWithRange:range];
-                    if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
-                        NSString * jsonResult = [subArray JSONFragment];
-                        if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                            [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
-                        } else {
-                            [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
-                        }
+                        [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
                     }
                 }
             }
         } else {
-            NSString * jsonResult = [contact searchItem:inName];
+            NSString * jsonResult = [contact searchItem:inName resultNum:resultNum];
             if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
                 [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
             } else {

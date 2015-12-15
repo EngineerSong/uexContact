@@ -23,7 +23,7 @@
 -(BOOL)addItemWithVCard:(NSString *)vcCardStr;
 -(BOOL)deleteItem:(NSString *)inName;
 -(NSMutableArray *)searchItem_all;
--(NSString *)searchItem:(NSString *)inName;
+-(NSString *)searchItem:(NSString *)inName resultNum:(NSInteger)resultNum;
 -(BOOL)modifyItem:(NSString *)inName phoneNum: (NSString *)inNum phoneEmail:(NSString *) ineMail;
 -(BOOL )modifyMulti:(NSMutableArray *)inArguments;
 @end

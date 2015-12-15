@@ -512,7 +512,7 @@
     }
 }
 
--(NSString *)searchItem:(NSString *)inName{
+-(NSString *)searchItem:(NSString *)inName resultNum:(NSInteger)resultNum{
     NSMutableArray * dataArray=[NSMutableArray arrayWithCapacity:3];
     //ABAddressBookRef addressBook = ABAddressBookCreate();
     ABAddressBookRef addressBook = nil;
@@ -532,8 +532,20 @@
     
     if (addressBook) {
         NSArray * people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)inName) autorelease];
+
         if (people != nil && [people count] > 0) {
-            for (int i = 0; i < [people count]; i ++) {
+            int count = (int)[people count];
+            NSInteger resultNumber;
+            if (resultNum >=0 && resultNum<count) {
+                resultNumber=resultNum;
+            }
+            else if (resultNum == -1 || resultNum >=count) {
+                resultNumber=count;
+            }
+            else{
+                return @"";
+            }
+            for (int i = 0; i < resultNumber; i ++) {
                 NSMutableDictionary * dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
                 ABRecordRef person = (ABRecordRef)[people objectAtIndex:i];
                 //返回数据
