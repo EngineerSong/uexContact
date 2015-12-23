@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexContact" version="3.0.7" build="7">
-        <info>7:searchItem接口增加返回信息条数配置;addItem接口增加是否弹出提示框配置</info>
+        uexName="uexContact" version="3.0.8" build="8">
+        <info>8:改用bundle方式加载资源;添加IDE支持</info>
+        <build>7:searchItem接口增加返回信息条数配置;addItem接口增加是否弹出提示框配置</build>
         <build>6:修改配置文件，修改BUG</build>
         <build>5:修改BUG</build>
         <build>4:修改打开联系人，多选信息电话号码不全的BUG</build>

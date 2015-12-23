@@ -540,7 +540,7 @@
 		NSString* bString = [selectNames objectForKey:bk];
 		NSInteger b = bString ? [bString intValue]:0;
 		if (b) {
-			UIImage *image = [UIImage imageNamed:@"uexContact/plugin_contact_selected.png"];
+			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
             [imageView release];
@@ -632,7 +632,7 @@
 			[tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationNone];
 		}
 		else {
-			UIImage *image = [UIImage imageNamed:@"uexContact/plugin_contact_selected.png"];
+			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
             [imageView release];
