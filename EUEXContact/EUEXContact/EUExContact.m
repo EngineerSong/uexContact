@@ -94,13 +94,13 @@
 -(void)addItem:(NSMutableArray *)inArguments {
     if ([self check_Authorization]) {
         actionArray = [[NSArray alloc] initWithArray:inArguments];
-        NSDictionary *isNeedAlert=[inArguments[3] JSONValue];
-        BOOL isNeedAlertDialog;
-        if(isNeedAlert){
-            isNeedAlertDialog=[[isNeedAlert objectForKey:@"isNeedAlertDialog"] boolValue];
-        }
-        else{
-            isNeedAlertDialog=YES;
+        BOOL isNeedAlertDialog=YES;
+        
+        if(inArguments.count>3){
+            NSDictionary *isNeedAlert=[inArguments[3] JSONValue];
+            if(isNeedAlert){
+                isNeedAlertDialog=[[isNeedAlert objectForKey:@"isNeedAlertDialog"] boolValue];
+            }
         }
         if(isNeedAlertDialog){
             [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:111];
@@ -181,8 +181,13 @@
 -(void)searchItem:(NSMutableArray *)inArguments {
     if ([self check_Authorization]) {
         NSString * inName = [inArguments objectAtIndex:0];
-        NSDictionary *option=[[inArguments objectAtIndex:1] JSONValue];
-        int resultNum=[[option objectForKey:@"resultNum"] intValue];
+        int resultNum=50;
+        if(inArguments.count>1){
+            NSDictionary *option=[[inArguments objectAtIndex:1] JSONValue];
+            if(option){
+                resultNum=[[option objectForKey:@"resultNum"] intValue];
+            }
+        }
         if (0 == [inName length]) {//传入名字为空时，就查找所有联系人
             NSMutableArray * array = [contact searchItem_all];
             if ([array isKindOfClass:[NSMutableArray class]] && [array count] > 0) {
