@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<uexplugins>
+    <plugin name="uexContact">
+        <method name="open"></method>
+		<method name="addItem"></method>
+        <method name="addItemWithVCard"></method>
+        <method name="searchItem"></method>
+        <method name="deleteItem"></method>
+        <method name="modifyItem"></method>
+        <method name ="multiOpen"></method>
+        <method name ="modifyMultiItem"></method>
+	</plugin>
+</uexplugins>
