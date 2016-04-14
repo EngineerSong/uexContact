@@ -22,8 +22,11 @@
 -(BOOL)addItem:(NSString *)name phoneNum:(NSString *)num  phoneEmail:(NSString *)email;
 -(BOOL)addItemWithVCard:(NSString *)vcCardStr;
 -(BOOL)deleteItem:(NSString *)inName;
+-(BOOL)deleteItemWithId:(int)ids;
 -(NSMutableArray *)searchItem_all;
 -(NSString *)searchItem:(NSString *)inName resultNum:(NSInteger)resultNum;
+-(NSString *)search:(int)ids;
 -(BOOL)modifyItem:(NSString *)inName phoneNum: (NSString *)inNum phoneEmail:(NSString *) ineMail;
+-(BOOL)modifyItemWithId:(int)ids  Name:(NSString *)inName phoneNum: (NSString *)inNum phoneEmail:(NSString *) ineMail;
 -(BOOL )modifyMulti:(NSMutableArray *)inArguments;
 @end

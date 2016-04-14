@@ -19,10 +19,12 @@
 #define UEX_JKTITLE			@"title"
 #define UEX_JKURL			@"url"
 #define UEX_JKNOTE			@"note"
+#define UEX_JKRECODEID      @"recodeID"
 
 @interface EUExContact : EUExBase <UIAlertViewDelegate>{
 	Contact * contact;
 	NSArray * actionArray;
+    int32_t  recordID;
 }
 -(void)uexOpenSuccessWithOpId:(int)inOpId dataType:(int)inDataType data:(NSString *)inData;
 @end
