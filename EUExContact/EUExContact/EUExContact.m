@@ -215,32 +215,25 @@
             if(option){
                 resultNum=[[option objectForKey:@"resultNum"] intValue];
                 if ([option objectForKey:@"isSearchAddress"] != nil) {
-                    NSString  *isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
-                    [user setObject:isSearchAddress forKey:@"isSearchAddress"];
+                    contact.isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
                 }
                 if ([option objectForKey:@"isSearchCompany"] != nil) {
-                    NSString  *isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]];
-                    [user setObject:isSearchCompany forKey:@"isSearchCompany"];
+                    contact.isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]]; 
                 }
                 if ([option objectForKey:@"isSearchEmail"] != nil) {
-                    NSString  *isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
-                    [user setObject:isSearchEmail forKey:@"isSearchEmail"];
+                    contact.isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
                 }
                 if ([option objectForKey:@"isSearchNote"] != nil) {
-                    NSString  *isSearchNote  = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
-                    [user setObject:isSearchNote forKey:@"isSearchNote"];
+                    contact.isSearchNote = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
                 }
                 if ([option objectForKey:@"isSearchNum"] != nil) {
-                    NSString  *isSearchNum  = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
-                    [user setObject:isSearchNum forKey:@"isSearchNum"];
+                    contact.isSearchNum = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
                 }
                 if ([option objectForKey:@"isSearchTitle"] != nil) {
-                    NSString  *isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
-                    [user setObject:isSearchTitle forKey:@"isSearchTitle"];
+                    contact.isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
                 }
                 if ([option objectForKey:@"isSearchUrl"] != nil) {
-                    NSString  *isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
-                    [user setObject:isSearchUrl forKey:@"isSearchUrl"];
+                    contact.isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
                 }
             }
         }
@@ -287,57 +280,50 @@
 // 通过ID查询
 -(void)search:(NSMutableArray *)inArguments
 {
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     if ([self check_Authorization]) {
         NSDictionary *option = [[inArguments objectAtIndex:0] JSONValue];
         int contactId;
         int resultNum=50;
         resultNum=[[option objectForKey:@"resultNum"] intValue];
         if ([option objectForKey:@"isSearchAddress"] != nil) {
-            NSString  *isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
-            [user setObject:isSearchAddress forKey:@"isSearchAddress"];
+            contact.isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
         }
         if ([option objectForKey:@"isSearchCompany"] != nil) {
-            NSString  *isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]];
-            [user setObject:isSearchCompany forKey:@"isSearchCompany"];
+            contact.isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]];
         }
         if ([option objectForKey:@"isSearchEmail"] != nil) {
-            NSString  *isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
-            [user setObject:isSearchEmail forKey:@"isSearchEmail"];
+            contact.isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
         }
         if ([option objectForKey:@"isSearchNote"] != nil) {
-            NSString  *isSearchNote  = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
-            [user setObject:isSearchNote forKey:@"isSearchNote"];
+            contact.isSearchNote = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
         }
         if ([option objectForKey:@"isSearchNum"] != nil) {
-            NSString  *isSearchNum  = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
-            [user setObject:isSearchNum forKey:@"isSearchNum"];
+            contact.isSearchNum = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
         }
         if ([option objectForKey:@"isSearchTitle"] != nil) {
-            NSString  *isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
-            [user setObject:isSearchTitle forKey:@"isSearchTitle"];
+            contact.isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
         }
         if ([option objectForKey:@"isSearchUrl"] != nil) {
-            NSString  *isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
-            [user setObject:isSearchUrl forKey:@"isSearchUrl"];
+            contact.isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
         }
         if ([option objectForKey:@"searchName"] != nil) {
-            NSString *searchName = [NSString stringWithFormat:@"%@",[option objectForKey:@"searchName"]];
-            [user setObject:searchName forKey:@"searchName"];
+            _searchName = [NSString stringWithFormat:@"%@",[option objectForKey:@"searchName"]];
         }
         contactId = [[option objectForKey:@"contactId"]intValue];
         if (contactId > 0) {
             NSString *jsonResult =[contact search:contactId];
             if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
+                NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
+                [EUtility brwView:meBrwView evaluateScript:jsonStr];
+                
             } else {
-                [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
+                NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
+                [EUtility brwView:meBrwView evaluateScript:jsonStr];
             }
-            user = nil;
         }
         else
         {
-            NSString *inName =[NSString stringWithFormat:@"%@",[user objectForKey:@"searchName"]];
+            NSString *inName =[NSString stringWithFormat:@"%@",_searchName];
             if (0 == [inName length]) {//传入名字为空时，就查找所有联系人
                 NSMutableArray * array = [contact searchItem_all];
                 if ([array isKindOfClass:[NSMutableArray class]] && [array count] > 0) {
@@ -356,23 +342,25 @@
                     if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
                         NSString * jsonResult = [subArray JSONFragment];
                         if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                            //处理换行符；
-                            //jsonResult=[jsonResult stringByReplacingOccurrencesOfString:@"\\n" withString:@" "];
-                            [self jsSuccessWithName:@"uexContact.cbSearch" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
+                            NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
+                            [EUtility brwView:meBrwView evaluateScript:jsonStr];
+                            
                         } else {
-                            [self jsSuccessWithName:@"uexContact.cbSearch" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
+                            NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
+                            [EUtility brwView:meBrwView evaluateScript:jsonStr];
                         }
-                        user = nil;
                     }
                 }
             } else {
                 NSString * jsonResult = [contact searchItem:inName resultNum:resultNum];
                 if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                    [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
+                    NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
+                    [EUtility brwView:meBrwView evaluateScript:jsonStr];
+                    
                 } else {
-                    [self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
+                    NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
+                    [EUtility brwView:meBrwView evaluateScript:jsonStr];
                 }
-                user = nil;
             }
             
         }

@@ -18,6 +18,13 @@
 	NSMutableDictionary * resultDict;
 	
 }
+@property (nonatomic, strong) NSString  *isSearchEmail;
+@property (nonatomic, strong) NSString  *isSearchNum;
+@property (nonatomic, strong) NSString  *isSearchAddress;
+@property (nonatomic, strong) NSString  *isSearchCompany;
+@property (nonatomic, strong) NSString  *isSearchTitle;
+@property (nonatomic, strong) NSString  *isSearchNote;
+@property (nonatomic, strong) NSString  *isSearchUrl;
 -(void)openItemWithUEx:(EUExContact *)euexObj_;
 -(BOOL)addItem:(NSString *)name phoneNum:(NSString *)num  phoneEmail:(NSString *)email;
 -(BOOL)addItemWithVCard:(NSString *)vcCardStr;

@@ -25,7 +25,7 @@
 
 //设置返回字典数据
 -(void)setDataDict:(ABRecordRef)person withInDict:(NSMutableDictionary*)dict{
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+//    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     //姓名
     NSString *nameStr = (NSString *)ABRecordCopyCompositeName(person);
     if (nameStr) {
@@ -34,7 +34,7 @@
     }
     [nameStr release];
     //电话
-    if ([[user objectForKey:@"isSearchNum"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchNum"] isEqualToString:@"0"]) {
+    if ([_isSearchNum isEqualToString:@"1"] || ![_isSearchNum isEqualToString:@"0"]) {
         ABMultiValueRef phone = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonPhoneProperty);
         NSString *personPhone = nil;
         NSArray *phoneArray = nil;
@@ -53,7 +53,7 @@
         [personPhone release];
     }
     //email
-    if ([[user objectForKey:@"isSearchEmail"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchEmail"] isEqualToString:@"0"]) {
+    if ([_isSearchEmail isEqualToString:@"1"] || ![_isSearchEmail isEqualToString:@"0"]) {
         ABMultiValueRef emails = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonEmailProperty);
         NSString * emailStr = nil;
         if (ABMultiValueGetCount(emails) > 0) {
@@ -68,7 +68,7 @@
         [emailStr release];
     }
     //address
-    if ([[user objectForKey:@"isSearchAddress"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchAddress"] isEqualToString:@"0"]) {
+    if ([_isSearchAddress isEqualToString:@"1"] || ![_isSearchAddress isEqualToString:@"0"]) {
         ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
         NSDictionary *addressDict = nil;
         if (ABMultiValueGetCount(addresses)>0) {
@@ -83,7 +83,7 @@
         [addressDict release];
     }
     //company
-    if ([[user objectForKey:@"isSearchCompany"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchCompany"] isEqualToString:@"0"]) {
+    if ([_isSearchCompany isEqualToString:@"1"] || ![_isSearchCompany isEqualToString:@"0"]) {
         NSString *companyStr = (NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
         if (companyStr != nil) {
             [dict setObject:companyStr forKey:UEX_JKORG];
@@ -93,7 +93,7 @@
         [companyStr release];
     }
     //title
-    if ([[user objectForKey:@"isSearchTitle"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchTitle"] isEqualToString:@"0"]) {
+    if ([_isSearchTitle isEqualToString:@"1"] || ![_isSearchTitle isEqualToString:@"0"]) {
         NSString * titleStr = (NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
         if (titleStr != nil) {
             [dict setObject:titleStr forKey:UEX_JKTITLE];
@@ -103,7 +103,7 @@
         [titleStr release];
     }
     //url
-    if ([[user objectForKey:@"isSearchUrl"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchUrl"]isEqualToString:@"0"]) {
+    if ([_isSearchUrl isEqualToString:@"1"] || ![_isSearchUrl isEqualToString:@"0"]) {
         ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
         NSString * urlStr = nil;
         if (ABMultiValueGetCount(urls) > 0) {
@@ -118,7 +118,7 @@
         [urlStr release];
     }
     //note
-    if ([[user objectForKey:@"isSearchNote"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchNote"] isEqualToString:@"0"]) {
+    if ([_isSearchNote isEqualToString:@"1"] || ![_isSearchNote isEqualToString:@"0"]) {
         NSString * noteStr = (NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
         if (noteStr != nil) {
             [dict setObject:noteStr forKey:UEX_JKNOTE];
@@ -138,7 +138,6 @@
     }
 }
 -(void)setDataDicts:(ABRecordRef)person withInDict:(NSMutableDictionary*)mutDic{
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSMutableArray *mutArray = [[NSMutableArray alloc] init];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
     //姓名
@@ -149,7 +148,8 @@
     }
     [nameStr release];
     //电话
-    if ([[user objectForKey:@"isSearchNum"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchNum"] isEqualToString:@"0"]) {
+    //电话
+    if ([_isSearchNum isEqualToString:@"1"] || ![_isSearchNum isEqualToString:@"0"]) {
         ABMultiValueRef phone = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonPhoneProperty);
         NSString *personPhone = nil;
         NSArray *phoneArray = nil;
@@ -161,13 +161,14 @@
         if (personPhone) {
             [dict setObject:personPhone forKey:UEX_JKNUM];
             [dict setObject:phoneArray forKey:UEX_JKNUM];
+            
         }else {
             [dict setObject:@"" forKey:UEX_JKNUM];
         }
         [personPhone release];
     }
     //email
-    if ([[user objectForKey:@"isSearchEmail"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchEmail"] isEqualToString:@"0"]) {
+    if ([_isSearchEmail isEqualToString:@"1"] || ![_isSearchEmail isEqualToString:@"0"]) {
         ABMultiValueRef emails = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonEmailProperty);
         NSString * emailStr = nil;
         if (ABMultiValueGetCount(emails) > 0) {
@@ -182,7 +183,7 @@
         [emailStr release];
     }
     //address
-    if ([[user objectForKey:@"isSearchAddress"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchAddress"] isEqualToString:@"0"]) {
+    if ([_isSearchAddress isEqualToString:@"1"] || ![_isSearchAddress isEqualToString:@"0"]) {
         ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
         NSDictionary *addressDict = nil;
         if (ABMultiValueGetCount(addresses)>0) {
@@ -197,7 +198,7 @@
         [addressDict release];
     }
     //company
-    if ([[user objectForKey:@"isSearchCompany"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchCompany"] isEqualToString:@"0"]) {
+    if ([_isSearchCompany isEqualToString:@"1"] || ![_isSearchCompany isEqualToString:@"0"]) {
         NSString *companyStr = (NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
         if (companyStr != nil) {
             [dict setObject:companyStr forKey:UEX_JKORG];
@@ -207,7 +208,7 @@
         [companyStr release];
     }
     //title
-    if ([[user objectForKey:@"isSearchTitle"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchTitle"] isEqualToString:@"0"]) {
+    if ([_isSearchTitle isEqualToString:@"1"] || ![_isSearchTitle isEqualToString:@"0"]) {
         NSString * titleStr = (NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
         if (titleStr != nil) {
             [dict setObject:titleStr forKey:UEX_JKTITLE];
@@ -217,7 +218,7 @@
         [titleStr release];
     }
     //url
-    if ([[user objectForKey:@"isSearchUrl"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchUrl"]isEqualToString:@"0"]) {
+    if ([_isSearchUrl isEqualToString:@"1"] || ![_isSearchUrl isEqualToString:@"0"]) {
         ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
         NSString * urlStr = nil;
         if (ABMultiValueGetCount(urls) > 0) {
@@ -232,7 +233,7 @@
         [urlStr release];
     }
     //note
-    if ([[user objectForKey:@"isSearchNote"] isEqualToString:@"1"] || ![[user objectForKey:@"isSearchNote"] isEqualToString:@"0"]) {
+    if ([_isSearchNote isEqualToString:@"1"] || ![_isSearchNote isEqualToString:@"0"]) {
         NSString * noteStr = (NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
         if (noteStr != nil) {
             [dict setObject:noteStr forKey:UEX_JKNOTE];
@@ -241,6 +242,7 @@
         }
         [noteStr release];
     }
+
     //recodeID
     NSString *recodeIDs = [NSString stringWithFormat:@"%d",(int)ABRecordGetRecordID(person)];
     if (recodeIDs != nil) {
@@ -697,7 +699,6 @@
 }
 - (NSString *)search:(int)ids
 {
-    NSMutableArray * dataArray=[NSMutableArray arrayWithCapacity:3];
     //ABAddressBookRef addressBook = ABAddressBookCreate();
     ABAddressBookRef addressBook = nil;
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0){
@@ -721,24 +722,19 @@
             NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
             NSString *result = @"0";
             [dataDict setObject:result forKey:@"result"];
-            [dataArray addObject:dataDict];
-            return [dataArray JSONFragment];
+            return [dataDict JSONFragment];
         }
         NSMutableDictionary * dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
         [self setDataDicts:oldPerson withInDict:dataDict];
-        [dataArray addObject:dataDict];
-
-        
         CFRelease(addressBook);
-        return [dataArray JSONFragment];
+        return [dataDict JSONFragment];
     }
     else
     {
         NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
         NSString *result = @"0";
         [dataDict setObject:result forKey:@"result"];
-        [dataArray addObject:dataDict];
-        return [dataArray JSONFragment];
+        return [dataDict JSONFragment];
     }
     return @"";
 }
