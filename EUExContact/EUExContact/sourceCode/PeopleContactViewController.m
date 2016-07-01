@@ -27,7 +27,10 @@
 #pragma mark init data
 -(void)doCallBack:(NSString*)jsonString{
 	if (callBack) {
-		[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
+		//[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
+        [callBack.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbMultiOpen" arguments:ACArgsPack(@0,@1,jsonString)];
+        [self.func executeWithArguments:ACArgsPack([jsonString ac_JSONValue])];
+        self.func = nil;
 	}
 }
 
@@ -227,7 +230,7 @@
 	}
     NSString *resultJson = nil;
     if ([selectPeoples count]>0) {
-        resultJson = [selectPeoples JSONFragment];
+        resultJson = [selectPeoples ac_JSONFragment];
     }
     NSLog(@"jsstr = %@",resultJson);
     [selectPeoples release];

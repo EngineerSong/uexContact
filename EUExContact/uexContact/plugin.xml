@@ -7,8 +7,8 @@
         <method name="searchItem"></method>
         <method name="deleteItem"></method>
         <method name="modifyItem"></method>
-        <method name ="multiOpen"></method>
-        <method name ="modifyMultiItem"></method>
+        <method name="multiOpen"></method>
+        <method name="modifyMultiItem"></method>
         <method name="deleteWithId"></method>
         <method name="search"></method>
         <method name="modifyWithId"></method>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2161B3D91D23797600D624AF /* AppCanKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2161B3D81D23797600D624AF /* AppCanKit.framework */; };
 		42EE60991C2A7357007CFCB4 /* plugin_contact_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 42EE60981C2A7357007CFCB4 /* plugin_contact_selected.png */; };
 		5A500E8C188FB0190022E07C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A500E8B188FB0190022E07C /* Foundation.framework */; };
 		5A500E93188FB0190022E07C /* EUExContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A500E92188FB0190022E07C /* EUExContact.m */; };
@@ -29,13 +30,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2161B3D81D23797600D624AF /* AppCanKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppCanKit.framework; sourceTree = "<group>"; };
 		42EE60921C2A72F9007CFCB4 /* uexContact.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = uexContact.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		42EE60981C2A7357007CFCB4 /* plugin_contact_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plugin_contact_selected.png; sourceTree = "<group>"; };
 		5A500E88188FB0190022E07C /* libuexContact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libuexContact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A500E8B188FB0190022E07C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5A500E8F188FB0190022E07C /* EUEXContact-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EUEXContact-Prefix.pch"; sourceTree = "<group>"; };
 		5A500E92188FB0190022E07C /* EUExContact.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EUExContact.m; sourceTree = "<group>"; };
-		5A500EB2188FB06E0022E07C /* EUExBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBase.h; sourceTree = "<group>"; };
 		5A500EB3188FB06E0022E07C /* EUExBaseDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBaseDefine.h; sourceTree = "<group>"; };
 		5A500EB4188FB06E0022E07C /* EUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUtility.h; sourceTree = "<group>"; };
 		5A500EB6188FB07B0022E07C /* ChineseToPinyin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChineseToPinyin.h; sourceTree = "<group>"; };
@@ -68,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2161B3D91D23797600D624AF /* AppCanKit.framework in Frameworks */,
 				5A500E8C188FB0190022E07C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,7 +135,6 @@
 		5A500EB1188FB06E0022E07C /* engineHeader */ = {
 			isa = PBXGroup;
 			children = (
-				5A500EB2188FB06E0022E07C /* EUExBase.h */,
 				5A500EB3188FB06E0022E07C /* EUExBaseDefine.h */,
 				5A500EB4188FB06E0022E07C /* EUtility.h */,
 			);
@@ -143,6 +144,7 @@
 		5A500EB5188FB07B0022E07C /* sourceCode */ = {
 			isa = PBXGroup;
 			children = (
+				2161B3D81D23797600D624AF /* AppCanKit.framework */,
 				5A500EB6188FB07B0022E07C /* ChineseToPinyin.h */,
 				5A500EB7188FB07B0022E07C /* ChineseToPinyin.m */,
 				5A500EB8188FB07B0022E07C /* Contact.h */,
@@ -404,6 +406,10 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/EUEXContact.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EUEXContact/sourceCode",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUEXContact/EUEXContact-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -418,6 +424,10 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/EUEXContact.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EUEXContact/sourceCode",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUEXContact/EUEXContact-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;

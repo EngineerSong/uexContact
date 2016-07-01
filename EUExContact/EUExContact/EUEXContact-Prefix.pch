@@ -8,5 +8,6 @@
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
     #import "EUtility.h"
+    #import <AppCanKit/AppCanKit.h>
     #define UEX_BUNDLE [EUtility bundleForPlugin:@"uexContact"]
 #endif

@@ -14,7 +14,6 @@
 
 
 
-
 @implementation Contact
 // Called after a value has been selected by the user.
 // Return YES if you want default action to be performed.
@@ -266,7 +265,7 @@
     //返回数据
     [self setDataDict:person withInDict:dict];
     
-    NSString *JSONStr = [dict JSONFragment];
+    NSString *JSONStr = [dict ac_JSONFragment];
     [euexObj uexOpenSuccessWithOpId:0 dataType:UEX_CALLBACK_DATATYPE_JSON data:JSONStr];
     [peoplePicker dismissModalViewControllerAnimated:YES];
     return NO;
@@ -277,19 +276,20 @@
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:3];
     //返回数据
     [self setDataDict:person withInDict:dict];
-    NSString *JSONStr = [dict JSONFragment];
+    NSString *JSONStr = [dict ac_JSONFragment];
     [euexObj uexOpenSuccessWithOpId:0 dataType:UEX_CALLBACK_DATATYPE_JSON data:JSONStr];
     [peoplePicker dismissModalViewControllerAnimated:YES];
 }
 
 -(void)openItemWithUEx:(EUExContact *)euexObj_ {
     euexObj = euexObj_;
+    
     if (!_peoplePicker) {
         _peoplePicker = [[ABPeoplePickerNavigationController alloc] init];
         _peoplePicker.peoplePickerDelegate = self;
     }
-    [EUtility brwView:euexObj.meBrwView presentModalViewController:(UIViewController *)_peoplePicker animated:YES];
-    
+    //[EUtility brwView:euexObj.meBrwView presentModalViewController:(UIViewController *)_peoplePicker animated:YES];
+    [[[euexObj webViewEngine] viewController] presentViewController:(UIViewController*)_peoplePicker animated:YES completion:nil];
 }
 
 -(BOOL)addPhone:(ABRecordRef)person phone:(NSString*)phone
@@ -920,7 +920,7 @@
         NSLog(@"addressBook");
         NSArray * people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)inName) autorelease];
         if (people != nil && [people count] > 0) {
-            NSDictionary *dict = [[[self searchItem:inName] JSONValue] objectAtIndex:0] ;
+            NSDictionary *dict = [[[self searchItem:inName] ac_JSONValue] objectAtIndex:0] ;
             NSMutableArray *oldNum = [dict objectForKey:@"num"];
             if( [index integerValue] < oldNum.count ){
                 [oldNum setObject:inNum atIndexedSubscript:[index integerValue]];
