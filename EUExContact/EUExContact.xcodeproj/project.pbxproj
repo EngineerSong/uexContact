@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2154BD771D38835700EEC520 /* plugin_contacts_cb_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 2154BD761D38835700EEC520 /* plugin_contacts_cb_normal.png */; };
 		2161B3D91D23797600D624AF /* AppCanKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2161B3D81D23797600D624AF /* AppCanKit.framework */; };
 		42EE60991C2A7357007CFCB4 /* plugin_contact_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 42EE60981C2A7357007CFCB4 /* plugin_contact_selected.png */; };
 		5A500E8C188FB0190022E07C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A500E8B188FB0190022E07C /* Foundation.framework */; };
@@ -30,6 +31,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2154BD761D38835700EEC520 /* plugin_contacts_cb_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plugin_contacts_cb_normal.png; sourceTree = "<group>"; };
 		2161B3D81D23797600D624AF /* AppCanKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppCanKit.framework; sourceTree = "<group>"; };
 		42EE60921C2A72F9007CFCB4 /* uexContact.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = uexContact.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		42EE60981C2A7357007CFCB4 /* plugin_contact_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plugin_contact_selected.png; sourceTree = "<group>"; };
@@ -43,13 +45,6 @@
 		5A500EB7188FB07B0022E07C /* ChineseToPinyin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChineseToPinyin.m; sourceTree = "<group>"; };
 		5A500EB8188FB07B0022E07C /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
 		5A500EB9188FB07B0022E07C /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
-		5A500EBB188FB07B0022E07C /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		5A500EBC188FB07B0022E07C /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
-		5A500EBD188FB07B0022E07C /* NSString+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
-		5A500EBE188FB07B0022E07C /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
-		5A500EBF188FB07B0022E07C /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
-		5A500EC0188FB07B0022E07C /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
-		5A500EC1188FB07B0022E07C /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		5A500EC2188FB07B0022E07C /* NSDictionary-MutableDeepCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-MutableDeepCopy.h"; sourceTree = "<group>"; };
 		5A500EC3188FB07B0022E07C /* NSDictionary-MutableDeepCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-MutableDeepCopy.m"; sourceTree = "<group>"; };
 		5A500EC4188FB07B0022E07C /* PeopleContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleContactViewController.h; sourceTree = "<group>"; };
@@ -81,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				42EE60981C2A7357007CFCB4 /* plugin_contact_selected.png */,
+				2154BD761D38835700EEC520 /* plugin_contacts_cb_normal.png */,
 			);
 			path = uexContactBundle;
 			sourceTree = "<group>";
@@ -149,27 +145,12 @@
 				5A500EB7188FB07B0022E07C /* ChineseToPinyin.m */,
 				5A500EB8188FB07B0022E07C /* Contact.h */,
 				5A500EB9188FB07B0022E07C /* Contact.m */,
-				5A500EBA188FB07B0022E07C /* JSON */,
 				5A500EC2188FB07B0022E07C /* NSDictionary-MutableDeepCopy.h */,
 				5A500EC3188FB07B0022E07C /* NSDictionary-MutableDeepCopy.m */,
 				5A500EC4188FB07B0022E07C /* PeopleContactViewController.h */,
 				5A500EC5188FB07B0022E07C /* PeopleContactViewController.m */,
 			);
 			path = sourceCode;
-			sourceTree = "<group>";
-		};
-		5A500EBA188FB07B0022E07C /* JSON */ = {
-			isa = PBXGroup;
-			children = (
-				5A500EBB188FB07B0022E07C /* JSON.h */,
-				5A500EBC188FB07B0022E07C /* NSObject+SBJSON.h */,
-				5A500EBD188FB07B0022E07C /* NSString+SBJSON.h */,
-				5A500EBE188FB07B0022E07C /* SBJSON.h */,
-				5A500EBF188FB07B0022E07C /* SBJsonBase.h */,
-				5A500EC0188FB07B0022E07C /* SBJsonParser.h */,
-				5A500EC1188FB07B0022E07C /* SBJsonWriter.h */,
-			);
-			path = JSON;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42EE60991C2A7357007CFCB4 /* plugin_contact_selected.png in Resources */,
+				2154BD771D38835700EEC520 /* plugin_contacts_cb_normal.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
