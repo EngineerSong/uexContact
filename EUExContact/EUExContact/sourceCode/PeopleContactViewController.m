@@ -542,14 +542,20 @@
 		if (b) {
 			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
-			cell.accessoryView = imageView;
+			cell.accessoryView = imageView; 
             [imageView release];
 		}
 		else {
-			cell.accessoryView = nil;
+            UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
+            UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+            cell.accessoryView = imageView;
+			//cell.accessoryView = nil;
 		}
 	}else {
-		cell.accessoryView = nil;
+        UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
+        UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+        cell.accessoryView = imageView;
+		//cell.accessoryView = nil;
 	}
     return cell;
 }

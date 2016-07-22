@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexContact" version="3.0.10" build="10">
-        <info>10:修复cbSearch回调与安卓不一致,参数命名不一致的问题</info>
+        uexName="uexContact" version="3.0.11" build="11">
+         <info>11:优化UI</info>
+        <build>10:修复cbSearch回调与安卓不一致,参数命名不一致的问题</build>
         <build>9:新增search,modifyWithId,deleteWithId接口以及对应回调</build>
         <build>8:改用bundle方式加载资源;添加IDE支持</build>
         <build>7:searchItem接口增加返回信息条数配置;addItem接口增加是否弹出提示框配置</build>
