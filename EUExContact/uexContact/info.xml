@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin
-        uexName="uexContact" version="3.0.11" build="11">
-         <info>11:优化UI</info>
-        <build>10:修复cbSearch回调与安卓不一致,参数命名不一致的问题</build>
-        <build>9:新增search,modifyWithId,deleteWithId接口以及对应回调</build>
-        <build>8:改用bundle方式加载资源;添加IDE支持</build>
-        <build>7:searchItem接口增加返回信息条数配置;addItem接口增加是否弹出提示框配置</build>
-        <build>6:修改配置文件，修改BUG</build>
-        <build>5:修改BUG</build>
-        <build>4:修改打开联系人，多选信息电话号码不全的BUG</build>
-        <build>3:增加可以查询和，修改多个号码的联系人接口</build>
-        <build>2:修改增加联系人接口，一个联系人可以添加多个电话号码</build>
-        <build>1:修复uexContact在iOS8以上版本无法返回联系人信息的bug</build>
-        <build>0:联系人功能插件</build>
-    </plugin>
+  <plugin uexName="uexContact" version="3.0.12" build="12">
+    <info>12: IDE证书更新</info>
+    <build>11: 优化UI</build>
+    <build>10: 修复cbSearch回调与安卓不一致,参数命名不一致的问题</build>
+    <build>9: 新增search,modifyWithId,deleteWithId接口以及对应回调</build>
+    <build>8: 改用bundle方式加载资源;添加IDE支持</build>
+    <build>7: searchItem接口增加返回信息条数配置;addItem接口增加是否弹出提示框配置</build>
+    <build>6: 修改配置文件，修改BUG</build>
+    <build>5: 修改BUG</build>
+    <build>4: 修改打开联系人，多选信息电话号码不全的BUG</build>
+    <build>3: 增加可以查询和，修改多个号码的联系人接口</build>
+    <build>2: 修改增加联系人接口，一个联系人可以添加多个电话号码</build>
+    <build>1: 修复uexContact在iOS8以上版本无法返回联系人信息的bug</build>
+    <build>0: 联系人功能插件</build>
+  </plugin>
 </uexplugins>
