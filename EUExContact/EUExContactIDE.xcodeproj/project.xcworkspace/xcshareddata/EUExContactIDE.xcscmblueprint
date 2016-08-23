@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "398E1285D4A48AAE1188C2392938BB594BBFD148",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "74DD8384E8D4CD102FDA6AB1AFF33BEDEBDE524A" : 0,
+    "398E1285D4A48AAE1188C2392938BB594BBFD148" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "8607AF33-F166-45C4-B644-82F734ADE10E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "74DD8384E8D4CD102FDA6AB1AFF33BEDEBDE524A" : "AppCanPluginTools-iOS\/",
+    "398E1285D4A48AAE1188C2392938BB594BBFD148" : "uexContact\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "EUExContactIDE",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "EUEXContact\/EUExContactIDE.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ios-plugin\/uexContact.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "398E1285D4A48AAE1188C2392938BB594BBFD148"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/git.oschina.net\/connyliu\/AppCanPluginTools-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "74DD8384E8D4CD102FDA6AB1AFF33BEDEBDE524A"
+    }
+  ]
+}
