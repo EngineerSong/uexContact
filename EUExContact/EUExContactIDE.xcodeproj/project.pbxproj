@@ -10,36 +10,7 @@
 	<string>46</string>
 	<key>objects</key>
 	<dict>
-		<key>02318F1AC3551756AF5F56B1</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>AppCanEngine.framework</string>
-			<key>path</key>
-			<string>../../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/AppCanEngine.framework</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>078081C5BD741FB59C86FAE5</key>
-		<dict>
-			<key>fileRef</key>
-			<string>7D12A31CB29BAF8E77494621</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>09F8418201C4675D598ABE45</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2CEBA872F2C95E01D913F405</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>178D6B07B114C291253ED9C1</key>
+		<key>049F83D478A3CB1BAC1ABD9A</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -54,14 +25,78 @@
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>1B88ACD182B2CC9F61F181DF</key>
+		<key>0B7B0E2DA6AB0E47588C0B28</key>
 		<dict>
 			<key>fileRef</key>
-			<string>C1C9E5EF852267874E0C1870</string>
+			<string>4AAC51B75FFCA163E73DF832</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>262AE61D4562A7DEA7E74C39</key>
+		<key>1BAFC88755C7F5D135C49E0E</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>DF2EBA0AB29EA000C10D85E2</string>
+			</array>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>20BB33FA67456157CAB8F947</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>QuartzCore.framework</string>
+			<key>path</key>
+			<string>System/Library/Frameworks/QuartzCore.framework</string>
+			<key>sourceTree</key>
+			<string>SDKROOT</string>
+		</dict>
+		<key>21A2072D1D41F06B00DC38BD</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>image.png</string>
+			<key>path</key>
+			<string>plugin_contact_selected.png</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>21A2072E1D41F06B00DC38BD</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>image.png</string>
+			<key>path</key>
+			<string>plugin_contacts_cb_normal.png</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>21A2072F1D41F06B00DC38BD</key>
+		<dict>
+			<key>fileRef</key>
+			<string>21A2072D1D41F06B00DC38BD</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>21A207301D41F06B00DC38BD</key>
+		<dict>
+			<key>fileRef</key>
+			<string>21A2072E1D41F06B00DC38BD</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>3576CF66861FEA1DEF1B004D</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -70,48 +105,11 @@
 			<key>lastKnownFileType</key>
 			<string>archive.ar</string>
 			<key>name</key>
-			<string>libc++.tbd</string>
+			<string>libstdc++.tbd</string>
 			<key>path</key>
-			<string>usr/lib/libc++.tbd</string>
+			<string>usr/lib/libstdc++.tbd</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
-		</dict>
-		<key>2CEBA872F2C95E01D913F405</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>CoreGraphics.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/CoreGraphics.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>2DE5A6273EFC0FF6890A63A0</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>ImageIO.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/ImageIO.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>37B40B8C605FB032ADFE11BE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>7D12A31CB29BAF8E77494621</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>42EE608E1C2A72F9007CFCB4</key>
 		<dict>
@@ -141,7 +139,8 @@
 			<string>2147483647</string>
 			<key>files</key>
 			<array>
-				<string>42EE60991C2A7357007CFCB4</string>
+				<string>21A2072F1D41F06B00DC38BD</string>
+				<string>21A207301D41F06B00DC38BD</string>
 			</array>
 			<key>isa</key>
 			<string>PBXResourcesBuildPhase</string>
@@ -190,7 +189,8 @@
 		<dict>
 			<key>children</key>
 			<array>
-				<string>42EE60981C2A7357007CFCB4</string>
+				<string>21A2072D1D41F06B00DC38BD</string>
+				<string>21A2072E1D41F06B00DC38BD</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -315,23 +315,27 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
-		<key>42EE60981C2A7357007CFCB4</key>
+		<key>44373139366842F46E88BC9B</key>
 		<dict>
+			<key>fileRef</key>
+			<string>049F83D478A3CB1BAC1ABD9A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>4AAC51B75FFCA163E73DF832</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>lastKnownFileType</key>
-			<string>image.png</string>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>MapKit.framework</string>
 			<key>path</key>
-			<string>plugin_contact_selected.png</string>
+			<string>System/Library/Frameworks/MapKit.framework</string>
 			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>42EE60991C2A7357007CFCB4</key>
-		<dict>
-			<key>fileRef</key>
-			<string>42EE60981C2A7357007CFCB4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
+			<string>SDKROOT</string>
 		</dict>
 		<key>5A500E7F188FB0190022E07C</key>
 		<dict>
@@ -340,10 +344,10 @@
 				<string>5A500E8D188FB0190022E07C</string>
 				<string>42EE60931C2A72F9007CFCB4</string>
 				<string>5A500E8A188FB0190022E07C</string>
+				<string>82C30710F94EDE8E3DE6C97E</string>
+				<string>AA8509D5289D22BB059A86D2</string>
+				<string>C7BF869BE8F2949DBA9769BA</string>
 				<string>5A500E89188FB0190022E07C</string>
-				<string>C24B591985B04899A4363E65</string>
-				<string>C87A4BE195ECDB4E7B596067</string>
-				<string>7D12A31CB29BAF8E77494621</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -433,20 +437,20 @@
 			<key>files</key>
 			<array>
 				<string>5A500E8C188FB0190022E07C</string>
-				<string>A9A6C41AB458E01A2B62CC19</string>
-				<string>683F676EE647FB7FCC06EE22</string>
-				<string>5DAB99511921AC1C9B580FA5</string>
-				<string>B56C1711F86FB1260038F63E</string>
-				<string>B4DD8C1914E55B09E7AACA8B</string>
-				<string>D2619F0B296478F1BB40E08F</string>
-				<string>6F5DCF402834E6C15C2926E8</string>
-				<string>09F8418201C4675D598ABE45</string>
-				<string>1B88ACD182B2CC9F61F181DF</string>
-				<string>C755C4BB7A71FF657F93AE54</string>
-				<string>7F18AE0DD235C31DE4034A36</string>
-				<string>86588BBB5CF66B93F4CBF418</string>
-				<string>5BFC29EFD4082C3214D3667D</string>
-				<string>8A13BDB3A11C4E4DFD18A04D</string>
+				<string>0B7B0E2DA6AB0E47588C0B28</string>
+				<string>974BD10E91E5C49CE0F02152</string>
+				<string>6FD7B54DC16FBB4917AE8BAE</string>
+				<string>908B8708C7DE84FAF939F0E6</string>
+				<string>D9BB261CC14688E1F9FF10E1</string>
+				<string>5DF61596A1325121D63C3C08</string>
+				<string>6FF5278D071EA9497ADC8B95</string>
+				<string>BAD4DBB8EB0E60D257D2C7B0</string>
+				<string>5CAE8FBFC5CC13175B480030</string>
+				<string>E12F93E20AE145B37510AD77</string>
+				<string>6A519472A34E1E0906BB118A</string>
+				<string>44373139366842F46E88BC9B</string>
+				<string>5C4F300669C167E64892B7E4</string>
+				<string>FAD7409201573E9ACD491724</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -476,8 +480,7 @@
 			<array>
 				<string>5A500E84188FB0190022E07C</string>
 				<string>5A500E85188FB0190022E07C</string>
-				<string>5A500E86188FB0190022E07C</string>
-				<string>AA058EFCD6CFF9952B9848D3</string>
+				<string>1BAFC88755C7F5D135C49E0E</string>
 			</array>
 			<key>buildRules</key>
 			<array/>
@@ -783,9 +786,7 @@
 				<key>ARCHS</key>
 				<string>$(ARCHS_STANDARD)</string>
 				<key>BUNDLE_IDENTIFIER</key>
-				<string>com.appcan.ide</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Hangzhou Sea King Biological Technology Co., Ltd.</string>
+				<string>com.zywx.runner</string>
 				<key>CONFIGURATION_BUILD_DIR</key>
 				<string>$(SRCROOT)/uexContact/IDE/</string>
 				<key>DEBUG_INFORMATION_FORMAT</key>
@@ -835,11 +836,14 @@
 					<string>$(SRCROOT)/../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource</string>
 				</array>
 				<key>OTHER_LDFLAGS</key>
-				<string>-ObjC</string>
+				<array>
+					<string>-ObjC</string>
+					<string>$(SRCROOT)/../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/AppCanKit.framework/AppCanKit</string>
+				</array>
 				<key>PRODUCT_NAME</key>
 				<string>uexContact</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>756a3ff2-be53-4d08-862a-c050d0dfa3d9</string>
+				<string>3046553f-5c0d-4f94-8f3c-dd49ce267880</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
 			</dict>
@@ -855,9 +859,7 @@
 				<key>ARCHS</key>
 				<string>$(ARCHS_STANDARD)</string>
 				<key>BUNDLE_IDENTIFIER</key>
-				<string>com.appcan.ide</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Hangzhou Sea King Biological Technology Co., Ltd.</string>
+				<string>com.zywx.runner</string>
 				<key>CONFIGURATION_BUILD_DIR</key>
 				<string>$(SRCROOT)/uexContact/IDE/</string>
 				<key>DEBUG_INFORMATION_FORMAT</key>
@@ -907,11 +909,14 @@
 					<string>$(SRCROOT)/../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource</string>
 				</array>
 				<key>OTHER_LDFLAGS</key>
-				<string>-ObjC</string>
+				<array>
+					<string>-ObjC</string>
+					<string>$(SRCROOT)/../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/AppCanKit.framework/AppCanKit</string>
+				</array>
 				<key>PRODUCT_NAME</key>
 				<string>uexContact</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>756a3ff2-be53-4d08-862a-c050d0dfa3d9</string>
+				<string>3046553f-5c0d-4f94-8f3c-dd49ce267880</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
 			</dict>
@@ -1248,35 +1253,28 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>5BFC29EFD4082C3214D3667D</key>
+		<key>5C4F300669C167E64892B7E4</key>
 		<dict>
 			<key>fileRef</key>
-			<string>9C3BAA24A9F8908AD563E4CE</string>
+			<string>875F329DAE981E7802ED78F6</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>5DAB99511921AC1C9B580FA5</key>
+		<key>5CAE8FBFC5CC13175B480030</key>
 		<dict>
 			<key>fileRef</key>
-			<string>ED67D7572BC488910E20DE80</string>
+			<string>20BB33FA67456157CAB8F947</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>683F676EE647FB7FCC06EE22</key>
+		<key>5DF61596A1325121D63C3C08</key>
 		<dict>
 			<key>fileRef</key>
-			<string>9FF02E95547E68DB0D3BD0A9</string>
+			<string>FB84FD14BCD631D4640F10D5</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>6F5DCF402834E6C15C2926E8</key>
-		<dict>
-			<key>fileRef</key>
-			<string>84F2D8478F91265FAD632B3C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>707D600BE0B1E0BAD5C45A9C</key>
+		<key>62A115687145E7E1B2BFE4A8</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1285,35 +1283,59 @@
 			<key>lastKnownFileType</key>
 			<string>archive.ar</string>
 			<key>name</key>
-			<string>libstdc++.tbd</string>
+			<string>libc++.tbd</string>
 			<key>path</key>
-			<string>usr/lib/libstdc++.tbd</string>
+			<string>usr/lib/libc++.tbd</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>7D12A31CB29BAF8E77494621</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>name</key>
-			<string>uexContact.bundle</string>
-			<key>path</key>
-			<string>uexContact/uexContact.bundle</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>7F18AE0DD235C31DE4034A36</key>
+		<key>6A519472A34E1E0906BB118A</key>
 		<dict>
 			<key>fileRef</key>
-			<string>707D600BE0B1E0BAD5C45A9C</string>
+			<string>3576CF66861FEA1DEF1B004D</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>84F2D8478F91265FAD632B3C</key>
+		<key>6FD7B54DC16FBB4917AE8BAE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D236D77EE580BC15B21A027D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>6FF5278D071EA9497ADC8B95</key>
+		<dict>
+			<key>fileRef</key>
+			<string>B601B539D2E5A4DC2F007A05</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>82C30710F94EDE8E3DE6C97E</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>4AAC51B75FFCA163E73DF832</string>
+				<string>FCECC5CA7DD14E0D93230F80</string>
+				<string>D236D77EE580BC15B21A027D</string>
+				<string>9005224B830456AE1E82B728</string>
+				<string>E55CA51CBEBC75E1B80197E9</string>
+				<string>FB84FD14BCD631D4640F10D5</string>
+				<string>B601B539D2E5A4DC2F007A05</string>
+				<string>82CF78A3F3BEDEE6B7A56145</string>
+				<string>20BB33FA67456157CAB8F947</string>
+				<string>62A115687145E7E1B2BFE4A8</string>
+				<string>3576CF66861FEA1DEF1B004D</string>
+				<string>049F83D478A3CB1BAC1ABD9A</string>
+				<string>875F329DAE981E7802ED78F6</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>IDE-Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>82CF78A3F3BEDEE6B7A56145</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1322,42 +1344,20 @@
 			<key>lastKnownFileType</key>
 			<string>wrapper.framework</string>
 			<key>name</key>
-			<string>UIKit.framework</string>
+			<string>CoreGraphics.framework</string>
 			<key>path</key>
-			<string>System/Library/Frameworks/UIKit.framework</string>
+			<string>System/Library/Frameworks/CoreGraphics.framework</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>86588BBB5CF66B93F4CBF418</key>
+		<key>871C69BF0389A0BEAC43520C</key>
 		<dict>
 			<key>fileRef</key>
-			<string>178D6B07B114C291253ED9C1</string>
+			<string>C7BF869BE8F2949DBA9769BA</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>8A13BDB3A11C4E4DFD18A04D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>02318F1AC3551756AF5F56B1</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>8A2E3B6AA228C524B1005F48</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.strings</string>
-			<key>name</key>
-			<string>info.plist</string>
-			<key>path</key>
-			<string>../../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9C3BAA24A9F8908AD563E4CE</key>
+		<key>875F329DAE981E7802ED78F6</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1372,7 +1372,7 @@
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>9FF02E95547E68DB0D3BD0A9</key>
+		<key>9005224B830456AE1E82B728</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1381,114 +1381,32 @@
 			<key>lastKnownFileType</key>
 			<string>wrapper.framework</string>
 			<key>name</key>
-			<string>AudioToolbox.framework</string>
+			<string>ImageIO.framework</string>
 			<key>path</key>
-			<string>System/Library/Frameworks/AudioToolbox.framework</string>
+			<string>System/Library/Frameworks/ImageIO.framework</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>A34534F37DFEAB70E2D5FBFB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>CFNetWork.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/CFNetWork.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>A9A6C41AB458E01A2B62CC19</key>
+		<key>908B8708C7DE84FAF939F0E6</key>
 		<dict>
 			<key>fileRef</key>
-			<string>D8079097B6B8E0C345403400</string>
+			<string>9005224B830456AE1E82B728</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>AA058EFCD6CFF9952B9848D3</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>078081C5BD741FB59C86FAE5</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>B4DD8C1914E55B09E7AACA8B</key>
+		<key>974BD10E91E5C49CE0F02152</key>
 		<dict>
 			<key>fileRef</key>
-			<string>A34534F37DFEAB70E2D5FBFB</string>
+			<string>FCECC5CA7DD14E0D93230F80</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>B56C1711F86FB1260038F63E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2DE5A6273EFC0FF6890A63A0</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C1C9E5EF852267874E0C1870</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>QuartzCore.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/QuartzCore.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>C24B591985B04899A4363E65</key>
+		<key>AA8509D5289D22BB059A86D2</key>
 		<dict>
 			<key>children</key>
 			<array>
-				<string>D8079097B6B8E0C345403400</string>
-				<string>9FF02E95547E68DB0D3BD0A9</string>
-				<string>ED67D7572BC488910E20DE80</string>
-				<string>2DE5A6273EFC0FF6890A63A0</string>
-				<string>A34534F37DFEAB70E2D5FBFB</string>
-				<string>F2B9BC3C7627913D86F395C7</string>
-				<string>84F2D8478F91265FAD632B3C</string>
-				<string>2CEBA872F2C95E01D913F405</string>
-				<string>C1C9E5EF852267874E0C1870</string>
-				<string>262AE61D4562A7DEA7E74C39</string>
-				<string>707D600BE0B1E0BAD5C45A9C</string>
-				<string>178D6B07B114C291253ED9C1</string>
-				<string>9C3BAA24A9F8908AD563E4CE</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>IDE-Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C755C4BB7A71FF657F93AE54</key>
-		<dict>
-			<key>fileRef</key>
-			<string>262AE61D4562A7DEA7E74C39</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C87A4BE195ECDB4E7B596067</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>02318F1AC3551756AF5F56B1</string>
-				<string>8A2E3B6AA228C524B1005F48</string>
+				<string>B57E45AB2B807B609CD15E3F</string>
+				<string>E2A68B6959FB01D493257E65</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -1497,14 +1415,7 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>D2619F0B296478F1BB40E08F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>F2B9BC3C7627913D86F395C7</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D8079097B6B8E0C345403400</key>
+		<key>B57E45AB2B807B609CD15E3F</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1513,13 +1424,50 @@
 			<key>lastKnownFileType</key>
 			<string>wrapper.framework</string>
 			<key>name</key>
-			<string>MapKit.framework</string>
+			<string>AppCanEngine.framework</string>
 			<key>path</key>
-			<string>System/Library/Frameworks/MapKit.framework</string>
+			<string>../../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/AppCanEngine.framework</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>B601B539D2E5A4DC2F007A05</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>UIKit.framework</string>
+			<key>path</key>
+			<string>System/Library/Frameworks/UIKit.framework</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>ED67D7572BC488910E20DE80</key>
+		<key>BAD4DBB8EB0E60D257D2C7B0</key>
+		<dict>
+			<key>fileRef</key>
+			<string>82CF78A3F3BEDEE6B7A56145</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C7BF869BE8F2949DBA9769BA</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.cfbundle</string>
+			<key>name</key>
+			<string>uexContact.bundle</string>
+			<key>path</key>
+			<string>uexContact/uexContact.bundle</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D236D77EE580BC15B21A027D</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1534,7 +1482,65 @@
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
-		<key>F2B9BC3C7627913D86F395C7</key>
+		<key>D9BB261CC14688E1F9FF10E1</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E55CA51CBEBC75E1B80197E9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>DF2EBA0AB29EA000C10D85E2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C7BF869BE8F2949DBA9769BA</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>E12F93E20AE145B37510AD77</key>
+		<dict>
+			<key>fileRef</key>
+			<string>62A115687145E7E1B2BFE4A8</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>E2A68B6959FB01D493257E65</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.strings</string>
+			<key>name</key>
+			<string>info.plist</string>
+			<key>path</key>
+			<string>../../../AppCanPluginTools-iOS/resource/IDEPluginProjectPackageResource/info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E55CA51CBEBC75E1B80197E9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>CFNetWork.framework</string>
+			<key>path</key>
+			<string>System/Library/Frameworks/CFNetWork.framework</string>
+			<key>sourceTree</key>
+			<string>SDKROOT</string>
+		</dict>
+		<key>FAD7409201573E9ACD491724</key>
+		<dict>
+			<key>fileRef</key>
+			<string>B57E45AB2B807B609CD15E3F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FB84FD14BCD631D4640F10D5</key>
 		<dict>
 			<key>fileEncoding</key>
 			<string>4</string>
@@ -1546,6 +1552,21 @@
 			<string>MobileCoreServices.framework</string>
 			<key>path</key>
 			<string>System/Library/Frameworks/MobileCoreServices.framework</string>
+			<key>sourceTree</key>
+			<string>SDKROOT</string>
+		</dict>
+		<key>FCECC5CA7DD14E0D93230F80</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>AudioToolbox.framework</string>
+			<key>path</key>
+			<string>System/Library/Frameworks/AudioToolbox.framework</string>
 			<key>sourceTree</key>
 			<string>SDKROOT</string>
 		</dict>
