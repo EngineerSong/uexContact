@@ -5855,7 +5855,7 @@ char pinyinFirstLetter(unsigned short hanzi)
         i++;
     }
 	
-	return [[[NSString alloc] initWithString:strValue] autorelease];	
+	return [[NSString alloc] initWithString:strValue];
 }
 
 - (char) ChinesePinyinHeadLetter

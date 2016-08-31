@@ -387,6 +387,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/EUEXContact.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -405,6 +406,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/EUEXContact.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
