@@ -341,7 +341,7 @@
     if ([self check_Authorization]) {
         //NSDictionary *option = [[inArguments objectAtIndex:0] ac_JSONValue];
         ACArgsUnpack(NSDictionary *option) = inArguments;
-        int contactId;
+        int contactId = -1;
         int resultNum=50;
         resultNum=[[option objectForKey:@"resultNum"] intValue];
         if ([option objectForKey:@"isSearchAddress"] != nil) {
@@ -373,7 +373,6 @@
         }else{
             _searchName = @"";
         }
-        
         if (contactId > 0) {
             NSString *jsonResult =[contact search:contactId];
             
