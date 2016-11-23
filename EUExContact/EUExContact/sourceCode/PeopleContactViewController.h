@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EUExBase.h"
+
 
 @interface PeopleContactViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>{
 	UITableView * table;
@@ -34,5 +34,5 @@
 @property(nonatomic,retain) UISearchBar *mySearchBar;
 @property(nonatomic,retain) UIToolbar* toolBar;
 @property(nonatomic,retain) EUExBase* callBack;
-
+@property(nonatomic,strong)ACJSFunctionRef *func;
 @end

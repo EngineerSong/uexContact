@@ -6,27 +6,41 @@
 	<dict>
 		<key>Info.plist</key>
 		<data>
-		2Ys+18RimNdtfLOSw+v2oMRoryI=
+		WFAoogEb71Qds3a9m/8BWTOeoEA=
 		</data>
-		<key>embedded.mobileprovision</key>
+		<key>uexContact.bundle/plugin_contact_selected.png</key>
 		<data>
-		JKbXoT98W7zj86Z2W3qbeHZe/kE=
+		DEvdUyaHE2Y3BvQMvHnJZuEcNtM=
 		</data>
-		<key>uexContact.bundle/Contents/Resources/plugin_contact_selected.png</key>
+		<key>uexContact.bundle/plugin_contacts_cb_normal.png</key>
 		<data>
-		j0W9RYjRtlbZh/QU/JluE886duY=
+		agZG2D0FgfVL3AwyYH3bNcbYnAQ=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>embedded.mobileprovision</key>
-		<data>
-		JKbXoT98W7zj86Z2W3qbeHZe/kE=
-		</data>
-		<key>uexContact.bundle/Contents/Resources/plugin_contact_selected.png</key>
-		<data>
-		j0W9RYjRtlbZh/QU/JluE886duY=
-		</data>
+		<key>uexContact.bundle/plugin_contact_selected.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			DEvdUyaHE2Y3BvQMvHnJZuEcNtM=
+			</data>
+			<key>hash2</key>
+			<data>
+			W8ZRLyBHuldYN2qQry34p6q8CIPeYUyiZleiPcB/Fm4=
+			</data>
+		</dict>
+		<key>uexContact.bundle/plugin_contacts_cb_normal.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			agZG2D0FgfVL3AwyYH3bNcbYnAQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			EPPeWgrGxMQIv853owm/NDJZEyCC3L7ljboqogH80uA=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>
@@ -45,6 +59,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -90,6 +109,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^Info\.plist$</key>
 		<dict>

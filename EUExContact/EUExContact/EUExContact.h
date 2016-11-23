@@ -6,7 +6,7 @@
 //  Copyright 2011 AppCan. All rights reserved.
 //
 
-#import "EUExBase.h"
+
 @class Contact;
 
 #define UEX_JKNAME			@"name"

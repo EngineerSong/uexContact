@@ -9,7 +9,7 @@
 #import "PeopleContactViewController.h"
 #import "NSDictionary-MutableDeepCopy.h"
 #import "ChineseToPinyin.h"
-#import "JSON.h"
+
 #import "EUEXContact.h"
 
 @implementation PeopleContactViewController
@@ -27,7 +27,10 @@
 #pragma mark init data
 -(void)doCallBack:(NSString*)jsonString{
 	if (callBack) {
-		[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
+		//[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
+        [callBack.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbMultiOpen" arguments:ACArgsPack(@0,@1,jsonString)];
+        [self.func executeWithArguments:ACArgsPack([jsonString ac_JSONValue])];
+        self.func = nil;
 	}
 }
 
@@ -227,7 +230,7 @@
 	}
     NSString *resultJson = nil;
     if ([selectPeoples count]>0) {
-        resultJson = [selectPeoples JSONFragment];
+        resultJson = [selectPeoples ac_JSONFragment];
     }
     NSLog(@"jsstr = %@",resultJson);
     [selectPeoples release];
@@ -383,6 +386,7 @@
 		rightItemButton.title = @"取消";
 		isEditableOrNot = 1;
 		[table setTableFooterView:[[[UIView alloc] initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].applicationFrame.size.width,40)] autorelease]];
+        
 		[self initToolbar];
 	}else {
 		rightItemButton.title = @"编辑";
@@ -536,25 +540,27 @@
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	if(isEditableOrNot) {  
-		NSString* bk = [NSString stringWithFormat:@"%dX%d",section,row];
+		NSString* bk = [NSString stringWithFormat:@"%ldX%ld",(long)section,(long)row];
 		NSString* bString = [selectNames objectForKey:bk];
 		NSInteger b = bString ? [bString intValue]:0;
 		if (b) {
 			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
-			cell.accessoryView = imageView; 
+			cell.accessoryView = imageView;
             [imageView release];
 		}
 		else {
             UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
             UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
             cell.accessoryView = imageView;
+            //[imageView release];
 			//cell.accessoryView = nil;
 		}
 	}else {
         UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
         UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
         cell.accessoryView = imageView;
+        //[imageView release];
 		//cell.accessoryView = nil;
 	}
     return cell;
@@ -628,7 +634,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if(isEditableOrNot && selectNames) {  
 		UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-		NSString* key = [NSString stringWithFormat:@"%dX%d",indexPath.section,indexPath.row];
+		NSString* key = [NSString stringWithFormat:@"%ldX%ld",indexPath.section,indexPath.row];
 		NSString* bString = [selectNames objectForKey:key];
 		NSInteger b = bString ? [bString intValue]:0;
 		if (b) {
