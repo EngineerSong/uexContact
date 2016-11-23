@@ -26,20 +26,20 @@
 -(void)setDataDict:(ABRecordRef)person withInDict:(NSMutableDictionary*)dict{
 //    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     //姓名
-    NSString *nameStr = (NSString *)ABRecordCopyCompositeName(person);
+    NSString *nameStr = (__bridge NSString *)ABRecordCopyCompositeName(person);
     if (nameStr) {
         [nameStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [dict setObject:nameStr forKey:UEX_JKNAME];
     }
-    [nameStr release];
+    //[nameStr release];
     //电话
     if ([_isSearchNum isEqualToString:@"1"] || ![_isSearchNum isEqualToString:@"0"]) {
         ABMultiValueRef phone = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonPhoneProperty);
         NSString *personPhone = nil;
         NSArray *phoneArray = nil;
         if (ABMultiValueGetCount(phone) > 0) {
-            personPhone = (NSString*)ABMultiValueCopyValueAtIndex(phone,0);
-            phoneArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
+            personPhone = (__bridge NSString*)ABMultiValueCopyValueAtIndex(phone,0);
+            phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
         }
         CFRelease(phone);
         if (personPhone) {
@@ -49,14 +49,14 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKNUM];
         }
-        [personPhone release];
+        //[personPhone release];
     }
     //email
     if ([_isSearchEmail isEqualToString:@"1"] || ![_isSearchEmail isEqualToString:@"0"]) {
         ABMultiValueRef emails = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonEmailProperty);
         NSString * emailStr = nil;
         if (ABMultiValueGetCount(emails) > 0) {
-            emailStr = (NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
+            emailStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
         }
         CFRelease(emails);
         if (emailStr != nil) {
@@ -64,14 +64,14 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKEMAIL];
         }
-        [emailStr release];
+        //[emailStr release];
     }
     //address
     if ([_isSearchAddress isEqualToString:@"1"] || ![_isSearchAddress isEqualToString:@"0"]) {
         ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
         NSDictionary *addressDict = nil;
         if (ABMultiValueGetCount(addresses)>0) {
-            addressDict = (NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
+            addressDict = (__bridge NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
         }
         CFRelease(addresses);
         if (addressDict != nil) {
@@ -79,34 +79,34 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKADR];
         }
-        [addressDict release];
+        //[addressDict release];
     }
     //company
     if ([_isSearchCompany isEqualToString:@"1"] || ![_isSearchCompany isEqualToString:@"0"]) {
-        NSString *companyStr = (NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
+        NSString *companyStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
         if (companyStr != nil) {
             [dict setObject:companyStr forKey:UEX_JKORG];
         }else {
             [dict setObject:@"" forKey:UEX_JKORG];
         }
-        [companyStr release];
+        //[companyStr release];
     }
     //title
     if ([_isSearchTitle isEqualToString:@"1"] || ![_isSearchTitle isEqualToString:@"0"]) {
-        NSString * titleStr = (NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
+        NSString * titleStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
         if (titleStr != nil) {
             [dict setObject:titleStr forKey:UEX_JKTITLE];
         }else {
             [dict setObject:@"" forKey:UEX_JKTITLE];
         }
-        [titleStr release];
+        //[titleStr release];
     }
     //url
     if ([_isSearchUrl isEqualToString:@"1"] || ![_isSearchUrl isEqualToString:@"0"]) {
         ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
         NSString * urlStr = nil;
         if (ABMultiValueGetCount(urls) > 0) {
-            urlStr = (NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
+            urlStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
         }
         CFRelease(urls);
         if (urlStr != nil) {
@@ -114,17 +114,17 @@
         } else {
             [dict setObject:@"" forKey:UEX_JKURL];
         }
-        [urlStr release];
+        //[urlStr release];
     }
     //note
     if ([_isSearchNote isEqualToString:@"1"] || ![_isSearchNote isEqualToString:@"0"]) {
-        NSString * noteStr = (NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
+        NSString * noteStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
         if (noteStr != nil) {
             [dict setObject:noteStr forKey:UEX_JKNOTE];
         }else {
             [dict setObject:@"" forKey:UEX_JKNOTE];
         }
-        [noteStr release];
+        //[noteStr release];
     }
     //recodeID
     NSString *recodeIDs = [NSString stringWithFormat:@"%d",(int)ABRecordGetRecordID(person)];
@@ -140,12 +140,12 @@
     NSMutableArray *mutArray = [[NSMutableArray alloc] init];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
     //姓名
-    NSString *nameStr = (NSString *)ABRecordCopyCompositeName(person);
+    NSString *nameStr = (__bridge NSString *)ABRecordCopyCompositeName(person);
     if (nameStr) {
         [nameStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [dict setObject:nameStr forKey:UEX_JKNAME];
     }
-    [nameStr release];
+    //[nameStr release];
     //电话
     //电话
     if ([_isSearchNum isEqualToString:@"1"] || ![_isSearchNum isEqualToString:@"0"]) {
@@ -153,8 +153,8 @@
         NSString *personPhone = nil;
         NSArray *phoneArray = nil;
         if (ABMultiValueGetCount(phone) > 0) {
-            personPhone = (NSString*)ABMultiValueCopyValueAtIndex(phone,0);
-            phoneArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
+            personPhone = (__bridge NSString*)ABMultiValueCopyValueAtIndex(phone,0);
+            phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
         }
         CFRelease(phone);
         if (personPhone) {
@@ -164,14 +164,14 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKNUM];
         }
-        [personPhone release];
+        //[personPhone release];
     }
     //email
     if ([_isSearchEmail isEqualToString:@"1"] || ![_isSearchEmail isEqualToString:@"0"]) {
         ABMultiValueRef emails = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonEmailProperty);
         NSString * emailStr = nil;
         if (ABMultiValueGetCount(emails) > 0) {
-            emailStr = (NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
+            emailStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
         }
         CFRelease(emails);
         if (emailStr != nil) {
@@ -179,14 +179,14 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKEMAIL];
         }
-        [emailStr release];
+        //[emailStr release];
     }
     //address
     if ([_isSearchAddress isEqualToString:@"1"] || ![_isSearchAddress isEqualToString:@"0"]) {
         ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
         NSDictionary *addressDict = nil;
         if (ABMultiValueGetCount(addresses)>0) {
-            addressDict = (NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
+            addressDict = (__bridge NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
         }
         CFRelease(addresses);
         if (addressDict != nil) {
@@ -194,34 +194,34 @@
         }else {
             [dict setObject:@"" forKey:UEX_JKADR];
         }
-        [addressDict release];
+        //[addressDict release];
     }
     //company
     if ([_isSearchCompany isEqualToString:@"1"] || ![_isSearchCompany isEqualToString:@"0"]) {
-        NSString *companyStr = (NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
+        NSString *companyStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
         if (companyStr != nil) {
             [dict setObject:companyStr forKey:UEX_JKORG];
         }else {
             [dict setObject:@"" forKey:UEX_JKORG];
         }
-        [companyStr release];
+        //[companyStr release];
     }
     //title
     if ([_isSearchTitle isEqualToString:@"1"] || ![_isSearchTitle isEqualToString:@"0"]) {
-        NSString * titleStr = (NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
+        NSString * titleStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
         if (titleStr != nil) {
             [dict setObject:titleStr forKey:UEX_JKTITLE];
         }else {
             [dict setObject:@"" forKey:UEX_JKTITLE];
         }
-        [titleStr release];
+        //[titleStr release];
     }
     //url
     if ([_isSearchUrl isEqualToString:@"1"] || ![_isSearchUrl isEqualToString:@"0"]) {
         ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
         NSString * urlStr = nil;
         if (ABMultiValueGetCount(urls) > 0) {
-            urlStr = (NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
+            urlStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
         }
         CFRelease(urls);
         if (urlStr != nil) {
@@ -229,17 +229,18 @@
         } else {
             [dict setObject:@"" forKey:UEX_JKURL];
         }
-        [urlStr release];
+        //[urlStr release];
     }
     //note
     if ([_isSearchNote isEqualToString:@"1"] || ![_isSearchNote isEqualToString:@"0"]) {
-        NSString * noteStr = (NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
+        NSString * noteStr = (__bridge NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
         if (noteStr != nil) {
             [dict setObject:noteStr forKey:UEX_JKNOTE];
         }else {
             [dict setObject:@"" forKey:UEX_JKNOTE];
         }
-        [noteStr release];
+        //
+       // [noteStr release];
     }
 
     //recodeID
@@ -252,7 +253,7 @@
         [dict setObject:@"" forKey:UEX_JKRECODEID];
     }
     [mutArray addObject:dict];
-     NSString *result = @"1";
+    NSString *result = @"0";
     [mutDic setObject:result forKey:@"result"];
     [mutDic setObject:mutArray forKey:@"contactList"];
     
@@ -303,15 +304,15 @@
     if (numArray != nil && [numArray count] > 1) {
         for(NSInteger i = 0;i <numArray.count  ;i++){
             if (i==0) {
-                ABMultiValueAddValueAndLabel(multi, (CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneMainLabel, &multivalueIdentifier);
+                ABMultiValueAddValueAndLabel(multi, (__bridge CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneMainLabel, &multivalueIdentifier);
             }else if(i == 1){
-                ABMultiValueAddValueAndLabel(multi, (CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneMobileLabel, &multivalueIdentifier);
+                ABMultiValueAddValueAndLabel(multi, (__bridge CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneMobileLabel, &multivalueIdentifier);
             }else{
-                ABMultiValueAddValueAndLabel(multi, (CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneHomeFAXLabel, &multivalueIdentifier);
+                ABMultiValueAddValueAndLabel(multi, (__bridge CFStringRef)[numArray objectAtIndex:i], kABPersonPhoneHomeFAXLabel, &multivalueIdentifier);
             }
         }
     }else{
-        ABMultiValueAddValueAndLabel(multi, (CFStringRef)phone, kABPersonPhoneMainLabel, &multivalueIdentifier);
+        ABMultiValueAddValueAndLabel(multi, (__bridge CFStringRef)phone, kABPersonPhoneMainLabel, &multivalueIdentifier);
     }
     
     //    if (!ABMultiValueAddValueAndLabel(multi, (CFStringRef)phone, kABPersonPhoneMainLabel, &multivalueIdentifier)){
@@ -332,7 +333,7 @@
 {
     ABMultiValueRef multi = ABMultiValueCreateMutable(kABMultiStringPropertyType);
     CFErrorRef anError = NULL;
-    ABMultiValueAddValueAndLabel(multi,email,kABOtherLabel,NULL);
+    ABMultiValueAddValueAndLabel(multi,(__bridge CFTypeRef)(email),kABOtherLabel,NULL);
     if (!ABRecordSetValue(person, kABPersonEmailProperty, multi, &anError)){
         CFRelease(multi);
         return NO;
@@ -360,7 +361,7 @@
 {
     ABMultiValueRef multi = ABMultiValueCreateMutable(kABMultiStringPropertyType);
     CFErrorRef anError = NULL;
-    ABMultiValueAddValueAndLabel(multi,address,kABWorkLabel,NULL);
+    ABMultiValueAddValueAndLabel(multi,(__bridge CFTypeRef)(address),kABWorkLabel,NULL);
     if (!ABRecordSetValue(person, kABPersonAddressProperty, multi, &anError)){
         CFRelease(multi);
         return NO;
@@ -372,7 +373,7 @@
 -(BOOL)addCompany:(ABRecordRef)person company:(NSString*)company
 {
     CFErrorRef error = NULL;
-    BOOL success = ABRecordSetValue(person, kABPersonOrganizationProperty, company, &error);
+    BOOL success = ABRecordSetValue(person, kABPersonOrganizationProperty, (__bridge CFTypeRef)(company), &error);
     if (!success) {
         //
     }
@@ -382,7 +383,7 @@
 -(BOOL)addTitle:(ABRecordRef)person title:(NSString*)title
 {
     CFErrorRef error = NULL;
-    BOOL success = ABRecordSetValue(person, kABPersonJobTitleProperty, title, &error);
+    BOOL success = ABRecordSetValue(person, kABPersonJobTitleProperty, (__bridge CFTypeRef)(title), &error);
     if (!success) {
         //
     }
@@ -393,7 +394,7 @@
 {
     ABMultiValueRef multi = ABMultiValueCreateMutable(kABMultiStringPropertyType);
     CFErrorRef anError = NULL;
-    ABMultiValueAddValueAndLabel(multi,url,kABPersonHomePageLabel,NULL);
+    ABMultiValueAddValueAndLabel(multi,(__bridge CFTypeRef)(url),kABPersonHomePageLabel,NULL);
     if (!ABRecordSetValue(person, kABPersonURLProperty, multi, &anError)){
         CFRelease(multi);
         return NO;
@@ -405,7 +406,7 @@
 -(BOOL)addNote:(ABRecordRef)person note:(NSString*)note
 {
     CFErrorRef error = NULL;
-    BOOL success=ABRecordSetValue(person, kABPersonNoteProperty, note, &error);
+    BOOL success=ABRecordSetValue(person, kABPersonNoteProperty, (__bridge CFTypeRef)(note), &error);
     if (!success) {
         //
     }
@@ -430,7 +431,7 @@
     if (addressBook) {
         CFErrorRef error = NULL;
         ABRecordRef person = ABPersonCreate();
-        ABRecordSetValue(person, kABPersonFirstNameProperty, (CFStringRef)name, &error) &&
+        ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)name, &error) &&
         [self addPhone:person phone:num] &&
         [self addEmail:person email:email];
         ABAddressBookAddRecord(addressBook, person, &error);
@@ -485,9 +486,9 @@
                     if ([components count] >= 2)
                         for (int i = 0; i < 2; i ++) {
                             if (i == 0) {
-                                result = ABRecordSetValue(person, kABPersonLastNameProperty, (CFStringRef)[components objectAtIndex:i], &error);
+                                result = ABRecordSetValue(person, kABPersonLastNameProperty, (__bridge CFStringRef)[components objectAtIndex:i], &error);
                             } else {
-                                result = ABRecordSetValue(person, kABPersonFirstNameProperty, (CFStringRef)[components objectAtIndex:i], &error);
+                                result = ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)[components objectAtIndex:i], &error);
                             }
                         }
                 } else {
@@ -604,10 +605,10 @@
     BOOL result = NO;
     if (addressBook) {
         CFErrorRef error = NULL;
-        NSArray *people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)opName) autorelease];
+        NSArray *people = (__bridge NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(__bridge CFStringRef)opName);
         if (people != nil && [people count] > 0) {
             //            for (int i = 0 ; i < [people count]; i ++) {
-            ABRecordRef person = (ABRecordRef)[people objectAtIndex:0];
+            ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:0];
             result = ABAddressBookRemoveRecord(addressBook, person, &error);
             if (result == YES) {
                 //
@@ -668,10 +669,11 @@
         addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
         //等待同意后向下执行
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-        ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error)
-                                                 {
-                                                     dispatch_semaphore_signal(sema);
-                                                 });
+        ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error){
+          if(granted){
+               dispatch_semaphore_signal(sema);
+          }
+        });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         dispatch_release(sema);
     } else {
@@ -679,18 +681,18 @@
     }
     
     if (addressBook) {
-        NSArray * people = (NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook);
+        NSArray * people = (__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook);
         if (people != nil && [people count] > 0) {
             for (int i = 0; i < [people count]; i ++) {
                 NSMutableDictionary * dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
-                ABRecordRef person = (ABRecordRef)[people objectAtIndex:i];
+                ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:i];
                 //返回数据
                 [self setDataDict:person withInDict:dataDict];
                 //添加进入数组
                 [dataArray addObject:dataDict];
             }
         }
-        [people release];
+        //[people release];
         CFRelease(addressBook);
         return dataArray;
     } else {
@@ -707,7 +709,9 @@
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error)
                                                  {
-                                                     dispatch_semaphore_signal(sema);
+                                                     if(granted){
+                                                         dispatch_semaphore_signal(sema);
+                                                     }
                                                  });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         dispatch_release(sema);
@@ -720,21 +724,21 @@
         ABRecordRef oldPerson =ABAddressBookGetPersonWithRecordID(addressBook, ids);
         if (!oldPerson) {
             NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
-            NSString *result = @"0";
+            NSString *result = @"1";
             [dataDict setObject:result forKey:@"result"];
-            return [dataDict JSONFragment];
+            return [dataDict ac_JSONFragment];
         }
         NSMutableDictionary * dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
         [self setDataDicts:oldPerson withInDict:dataDict];
         CFRelease(addressBook);
-        return [dataDict JSONFragment];
+        return [dataDict ac_JSONFragment];
     }
     else
     {
         NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
-        NSString *result = @"0";
+        NSString *result = @"1";
         [dataDict setObject:result forKey:@"result"];
-        return [dataDict JSONFragment];
+        return [dataDict ac_JSONFragment];
     }
     return @"";
 }
@@ -748,7 +752,9 @@
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error)
                                                  {
-                                                     dispatch_semaphore_signal(sema);
+                                                     if(granted){
+                                                         dispatch_semaphore_signal(sema);
+                                                     }
                                                  });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         dispatch_release(sema);
@@ -757,9 +763,8 @@
     }
     
     if (addressBook) {
-        NSArray * people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)inName) autorelease];
-
-        if (people != nil && [people count] > 0) {
+        NSArray * people = (__bridge NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(__bridge CFStringRef)inName);
+            if (people != nil && [people count] > 0) {
             int count = (int)[people count];
             NSInteger resultNumber;
             if (resultNum >=0 && resultNum<count) {
@@ -773,7 +778,7 @@
             }
             for (int i = 0; i < resultNumber; i ++) {
                 NSMutableDictionary * dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
-                ABRecordRef person = (ABRecordRef)[people objectAtIndex:i];
+                ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:i];
                 //返回数据
                 [self setDataDict:person withInDict:dataDict];
                 //添加进入数组
@@ -781,7 +786,7 @@
             }
         }
         CFRelease(addressBook);
-        return [dataArray JSONFragment];
+        return [dataArray ac_JSONFragment];
     }
     return @"";
 }
@@ -796,7 +801,9 @@
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error)
                                                  {
-                                                     dispatch_semaphore_signal(sema);
+                                                     if(granted){
+                                                         dispatch_semaphore_signal(sema);
+                                                     }
                                                  });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         dispatch_release(sema);
@@ -811,16 +818,16 @@
         }
         else
         {
-            ABRecordSetValue(person, kABPersonFirstNameProperty, (CFStringRef)inName, nil);
+            ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)inName, nil);
             //phone
             ABMutableMultiValueRef multiPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-            ABMultiValueAddValueAndLabel(multiPhone,inNum, kABPersonPhoneMainLabel, NULL);
+            ABMultiValueAddValueAndLabel(multiPhone,(__bridge CFTypeRef)(inNum), kABPersonPhoneMainLabel, NULL);
             ABRecordSetValue(person, kABPersonPhoneProperty, multiPhone,&error);
             CFRelease(multiPhone);
             
             //email
             ABMutableMultiValueRef multiEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-            ABMultiValueAddValueAndLabel(multiEmail, ineMail, kABWorkLabel, NULL);
+            ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFTypeRef)(ineMail), kABWorkLabel, NULL);
             ABRecordSetValue(person, kABPersonEmailProperty, multiEmail, &error);
             CFRelease(multiEmail);
             
@@ -842,7 +849,9 @@
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error)
                                                  {
-                                                     dispatch_semaphore_signal(sema);
+                                                     if(granted){
+                                                         dispatch_semaphore_signal(sema);
+                                                     }
                                                  });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         dispatch_release(sema);
@@ -852,10 +861,10 @@
     
     if (addressBook) {
         NSLog(@"addressBook");
-        NSArray * people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)inName) autorelease];
+        NSArray * people = (__bridge NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(__bridge CFStringRef)inName);
         
         if (people != nil && [people count] > 0) {
-            ABRecordRef person = (ABRecordRef)[people objectAtIndex:0];
+            ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:0];
             if (person) {
                 ABAddressBookRemoveRecord(addressBook, person, nil);
             } else {
@@ -864,16 +873,16 @@
             }
             ABRecordRef newPerson = ABPersonCreate();
             //name
-            ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (CFStringRef)inName, nil);
+            ABRecordSetValue(newPerson, kABPersonFirstNameProperty, (__bridge CFStringRef)inName, nil);
             //phone
             ABMutableMultiValueRef multiPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-            ABMultiValueAddValueAndLabel(multiPhone,inNum, kABPersonPhoneMainLabel, NULL);
+            ABMultiValueAddValueAndLabel(multiPhone,(__bridge CFTypeRef)(inNum), kABPersonPhoneMainLabel, NULL);
             ABRecordSetValue(newPerson, kABPersonPhoneProperty, multiPhone,&error);
             CFRelease(multiPhone);
             
             //email
             ABMutableMultiValueRef multiEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-            ABMultiValueAddValueAndLabel(multiEmail, ineMail, kABWorkLabel, NULL);
+            ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFTypeRef)(ineMail), kABWorkLabel, NULL);
             ABRecordSetValue(newPerson, kABPersonEmailProperty, multiEmail, &error);
             CFRelease(multiEmail);
             
@@ -918,24 +927,25 @@
     }
     if (addressBook) {
         NSLog(@"addressBook");
-        NSArray * people = [(NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(CFStringRef)inName) autorelease];
+        NSArray * people = (__bridge NSArray *)ABAddressBookCopyPeopleWithName(addressBook,(__bridge CFStringRef)inName);
         if (people != nil && [people count] > 0) {
-            NSDictionary *dict = [[[self searchItem:inName] ac_JSONValue] objectAtIndex:0] ;
+            //NSDictionary *dict = [[[self searchItem:inName] ac_JSONValue] objectAtIndex:0] ;
+            NSDictionary *dict = [[[self searchItem:inName resultNum:-1] ac_JSONValue] objectAtIndex:0] ;
             NSMutableArray *oldNum = [dict objectForKey:@"num"];
             if( [index integerValue] < oldNum.count ){
                 [oldNum setObject:inNum atIndexedSubscript:[index integerValue]];
-                ABRecordRef person = (ABRecordRef)[people objectAtIndex:0];
+                ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:0];
                 if (person) {
                     //                ABAddressBookRemoveRecord(addressBook, person, nil);
                     //修改电话
                     ABMutableMultiValueRef multiPhone = ABMultiValueCreateMutable(kABMultiStringPropertyType);
                     for(NSInteger i = 0;i <oldNum.count  ;i++){
                         if (i==0) {
-                            ABMultiValueAddValueAndLabel(multiPhone, (CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneMainLabel, NULL);
+                            ABMultiValueAddValueAndLabel(multiPhone, (__bridge CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneMainLabel, NULL);
                         }else if(i == 1){
-                            ABMultiValueAddValueAndLabel(multiPhone, (CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneMobileLabel, NULL);
+                            ABMultiValueAddValueAndLabel(multiPhone, (__bridge CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneMobileLabel, NULL);
                         }else{
-                            ABMultiValueAddValueAndLabel(multiPhone, (CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneHomeFAXLabel, NULL);
+                            ABMultiValueAddValueAndLabel(multiPhone, (__bridge CFStringRef)[oldNum objectAtIndex:i], kABPersonPhoneHomeFAXLabel, NULL);
                         }
                     }
                     ABRecordSetValue(person, kABPersonPhoneProperty, multiPhone,&error);
@@ -944,7 +954,7 @@
                     //修改Email
                     //email
                     ABMutableMultiValueRef multiEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-                    ABMultiValueAddValueAndLabel(multiEmail, ineMail, kABWorkLabel, NULL);
+                    ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFTypeRef)(ineMail), kABWorkLabel, NULL);
                     ABRecordSetValue(person, kABPersonEmailProperty, multiEmail, &error);
                     CFRelease(multiEmail);
                     
@@ -994,11 +1004,11 @@
 }
 -(void)dealloc{
     if (resultDict) {
-        [resultDict release];
+        //[resultDict release];
     }
     if (_peoplePicker) {
-        [_peoplePicker release];
+        //[_peoplePicker release];
     }
-    [super dealloc];
+    //[super dealloc];
 }
 @end

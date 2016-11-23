@@ -3,8 +3,8 @@
 @implementation NSDictionary(MutableDeepCopy)
 
 - (NSMutableDictionary *) mutableDeepCopy {
-    NSMutableDictionary * returnDict = [[[NSMutableDictionary alloc]
-									   initWithCapacity:[self count]] autorelease];
+    NSMutableDictionary * returnDict = [[NSMutableDictionary alloc]
+									   initWithCapacity:[self count]];
     NSArray * keys = [self allKeys];
     for (id key in keys) {
         id oneValue = [self valueForKey:key];
@@ -23,7 +23,7 @@
         }
         [returnDict setValue:oneCopy forKey:key];
         if (needRelease) {
-            [oneCopy release];
+            //[oneCopy release];
         }
     }
     return returnDict;

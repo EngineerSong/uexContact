@@ -29,15 +29,18 @@
 	if (callBack) {
 		//[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
         [callBack.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbMultiOpen" arguments:ACArgsPack(@0,@1,jsonString)];
-        [self.func executeWithArguments:ACArgsPack([jsonString ac_JSONValue])];
-        self.func = nil;
-	}
+        [self.func executeWithArguments:ACArgsPack(@(0),[jsonString ac_JSONValue])];
+        
+    }else{
+        [self.func executeWithArguments:ACArgsPack(@(1),nil)];
+    }
+         self.func = nil;
 }
 
 -(void)initSelectNames:(NSString*)value{
 	if (keys && names) {
         if (!self.selectNames) {
-            self.selectNames = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
+            self.selectNames = [[NSMutableDictionary alloc] initWithCapacity:1];
         }
 		NSInteger count = [keys count];
 		for (NSInteger i = 0; i < count; i++) {
@@ -68,24 +71,24 @@
         addressBook = ABAddressBookCreate();
     }
     
-	self.sourceArray = [(NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook) autorelease];
+	self.sourceArray = (__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook);
 	NSUInteger count = [sourceArray count];
     if (!self.keyArray) {
-        self.keyArray = [[[NSMutableArray alloc] initWithCapacity:count] autorelease];
+        self.keyArray = [[NSMutableArray alloc] initWithCapacity:count];
     }
 	for(NSUInteger i = 0;i < count;i++)
 	{
-		ABRecordRef record = [sourceArray objectAtIndex:i];
+		ABRecordRef record = (__bridge ABRecordRef)([sourceArray objectAtIndex:i]);
 		if (record) {
-			NSString *name = (NSString *)ABRecordCopyCompositeName(record);
+			NSString *name = (__bridge NSString *)ABRecordCopyCompositeName(record);
 			char letter = [name ChinesePinyinHeadLetter];
-            [name release];
-			[keyArray insertObject:[[[NSString alloc] initWithFormat:@"%c",letter] autorelease] atIndex:i];
+            //[name release];
+			[keyArray insertObject:[[NSString alloc] initWithFormat:@"%c",letter] atIndex:i];
 		}
 	}
-	self.allPeoples = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+	self.allPeoples = [[NSMutableDictionary alloc] initWithCapacity:2];
 	for (NSString* key in keyArray){
-		[allPeoples setObject:[[[NSMutableArray alloc] initWithCapacity:5] autorelease] forKey:key];
+		[allPeoples setObject:[[NSMutableArray alloc] initWithCapacity:5] forKey:key];
 	}
 	for (NSUInteger i = 0;i < count;i++){
 		NSMutableArray* array = [allPeoples objectForKey:[keyArray objectAtIndex:i]];
@@ -95,7 +98,7 @@
     if (!self.keys) {
        NSMutableArray *array = [[NSMutableArray alloc]initWithCapacity:1];
         self.keys = array;
-        [array release];
+        //[array release];
     }
     [self.keys setArray:kk];
 	self.names = [allPeoples mutableDeepCopy];
@@ -109,19 +112,19 @@
 //设置返回字典数据
 -(void)setDataDict:(ABRecordRef)person withInDict:(NSMutableDictionary*)dict{
     //姓名
-    NSString *nameStr = (NSString *)ABRecordCopyCompositeName(person);
+    NSString *nameStr = (__bridge NSString *)ABRecordCopyCompositeName(person);
     if (nameStr) {
 		[nameStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		[dict setObject:nameStr forKey:UEX_JKNAME];
 	}
-    [nameStr release];
+    //[nameStr release];
     //电话
     ABMultiValueRef phone = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonPhoneProperty);
 	NSString *personPhone =nil;
     NSArray *phoneArray = nil;
 	if (ABMultiValueGetCount(phone)>0) {
-		personPhone = (NSString*)ABMultiValueCopyValueAtIndex(phone,0);
-        phoneArray = (NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
+		personPhone = (__bridge NSString*)ABMultiValueCopyValueAtIndex(phone,0);
+        phoneArray = (__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phone);
 	}
     CFRelease(phone);
 	if (personPhone) {
@@ -130,12 +133,12 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKNUM];
 	}
-    [personPhone release];
+    //[personPhone release];
     //email
     ABMultiValueRef emails = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonEmailProperty);
  	NSString *emailStr = nil;
 	if (ABMultiValueGetCount(emails)>0) {
-		emailStr = (NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
+		emailStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(emails, 0);
 	}
     CFRelease(emails);
     if (emailStr != nil) {
@@ -143,12 +146,12 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKEMAIL];
 	}
-    [emailStr release];
+    //[emailStr release];
     //address
     ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
  	NSDictionary *addressDict = nil;
 	if (ABMultiValueGetCount(addresses)>0) {
-		addressDict = (NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
+		addressDict = (__bridge NSDictionary*)ABMultiValueCopyValueAtIndex(addresses, 0);
 	}
     CFRelease(addresses);
     if (addressDict != nil) {
@@ -156,31 +159,31 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKADR];
 	}
-    [addressDict release];
+    //[addressDict release];
     
     //company
-    NSString *companyStr=(NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
+    NSString *companyStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
     if (companyStr != nil) {
 		[dict setObject:companyStr forKey:UEX_JKORG];
 	}else {
 		[dict setObject:@"" forKey:UEX_JKORG];
 	}
-    [companyStr release];
+    //[companyStr release];
     
     //title
-    NSString *titleStr=(NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
+    NSString *titleStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
     if (titleStr != nil) {
 		[dict setObject:titleStr forKey:UEX_JKTITLE];
 	}else {
 		[dict setObject:@"" forKey:UEX_JKTITLE];
 	}
-    [titleStr release];
+    //[titleStr release];
     
     //url
     ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
  	NSString *urlStr = nil;
 	if (ABMultiValueGetCount(urls)>0) {
-		urlStr = (NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
+		urlStr = (__bridge NSString*)ABMultiValueCopyValueAtIndex(urls, 0);
 	}
     CFRelease(urls);
     if (urlStr != nil) {
@@ -188,16 +191,16 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKURL];
 	}
-    [urlStr release];
+    //[urlStr release];
     
     //note
-    NSString *noteStr=(NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
+    NSString *noteStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
     if (noteStr != nil) {
 		[dict setObject:noteStr forKey:UEX_JKNOTE];
 	}else {
 		[dict setObject:@"" forKey:UEX_JKNOTE];
 	}
-    [noteStr release];
+    //[noteStr release];
 }
 
 -(void)confirmButtonClick{
@@ -218,11 +221,11 @@
 					NSInteger cv = [ar count];
 					if (ar && row < cv) {
 						NSMutableDictionary* selectPeople = [[NSMutableDictionary alloc] initWithCapacity:3];
-						ABRecordRef person = [ar objectAtIndex:row];
+						ABRecordRef person = (__bridge ABRecordRef)([ar objectAtIndex:row]);
                         //返回数据
                         [self setDataDict:person withInDict:selectPeople];
 						[selectPeoples addObject:selectPeople];
-						[selectPeople release];
+						//[selectPeople release];
 					}					
 				}
 			}
@@ -233,7 +236,7 @@
         resultJson = [selectPeoples ac_JSONFragment];
     }
     NSLog(@"jsstr = %@",resultJson);
-    [selectPeoples release];
+    //[selectPeoples release];
     [self doCallBack:resultJson];
     
 	[self dismissModalViewControllerAnimated:YES];
@@ -269,27 +272,27 @@
 	[toolBar sizeToFit];
 	toolBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;//这句作用是切换时宽度自适应.
     
-    UIBarButtonItem *allSelectBarItem = [[[UIBarButtonItem alloc] init] autorelease];
+    UIBarButtonItem *allSelectBarItem = [[UIBarButtonItem alloc] init];
     [allSelectBarItem setTitle:@"全选"];
     [allSelectBarItem setStyle:UIBarButtonItemStyleBordered];
     [allSelectBarItem setTarget:self];
     [allSelectBarItem setAction:@selector(allSelectButtonClick)];
     
-    UIBarButtonItem *cancelSelectBarItem = [[[UIBarButtonItem alloc] init] autorelease];
+    UIBarButtonItem *cancelSelectBarItem = [[UIBarButtonItem alloc] init];
     [cancelSelectBarItem setTitle:@"取消全选"];
     [cancelSelectBarItem setStyle:UIBarButtonItemStyleBordered];
     [cancelSelectBarItem setTarget:self];
     [cancelSelectBarItem setAction:@selector(CancelAllSelectButtonClick)];
     
-    UIBarButtonItem *confirmBarItem = [[[UIBarButtonItem alloc] init] autorelease];
+    UIBarButtonItem *confirmBarItem = [[UIBarButtonItem alloc] init];
     [confirmBarItem setTitle:@"确定"];
     [confirmBarItem setStyle:UIBarButtonItemStyleBordered];
     [confirmBarItem setTarget:self];
     [confirmBarItem setAction:@selector(confirmButtonClick)];
     
-	UIBarButtonItem* barItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(nullButtonClick)] autorelease];
+	UIBarButtonItem* barItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:@selector(nullButtonClick)];
     
-    NSArray *array = [[[NSArray alloc] initWithObjects:allSelectBarItem, barItem, cancelSelectBarItem, barItem, confirmBarItem,nil] autorelease];
+    NSArray *array = [[NSArray alloc] initWithObjects:allSelectBarItem, barItem, cancelSelectBarItem, barItem, confirmBarItem,nil];
 	[toolBar setItems:array];
 	[self.view addSubview:toolBar];
 }
@@ -317,25 +320,25 @@
 		NSInteger count = [array count];
 		for (NSUInteger i = 0;i < count;i++){
 //			NSMutableArray* array = [allPeoples objectForKey:[keyArray objectAtIndex:i]];
-			ABRecordRef record = [array objectAtIndex:i];
-			NSString* name = (NSString *)ABRecordCopyCompositeName(record);
+			ABRecordRef record = (__bridge ABRecordRef)([array objectAtIndex:i]);
+			NSString* name = (__bridge NSString *)ABRecordCopyCompositeName(record);
 			NSLog(@"%@",name);
             if ([name rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location == NSNotFound)
 			{
 				if ([[name ChinesePinyin] rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location == NSNotFound) {
-					[toRemove addObject:(void*)record];	
+					[toRemove addObject:(__bridge id _Nonnull)((void*)record)];	
 				}				
 			}
-            [name release];
+            //[name release];
 		}
         if ([array count] == [toRemove count])
             [sectionsToRemove addObject:key];
 		
         [array removeObjectsInArray:toRemove];
-        [toRemove release];
+        //[toRemove release];
     }
     [keys removeObjectsInArray:sectionsToRemove];
-    [sectionsToRemove release];
+    //[sectionsToRemove release];
     [table reloadData];
 }
 
@@ -369,7 +372,7 @@
 }
 
 - (void)initSearchBar{
-	self.mySearchBar = [[[UISearchBar alloc]initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].applicationFrame.size.width,45)] autorelease];
+	self.mySearchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].applicationFrame.size.width,45)];
 	mySearchBar.delegate = self;
 	mySearchBar.placeholder =  @"搜索";
 	[mySearchBar setTintColor:[UIColor lightGrayColor]];
@@ -385,14 +388,14 @@
 	if ([title isEqualToString:@"编辑"]) {
 		rightItemButton.title = @"取消";
 		isEditableOrNot = 1;
-		[table setTableFooterView:[[[UIView alloc] initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].applicationFrame.size.width,40)] autorelease]];
+		[table setTableFooterView:[[UIView alloc] initWithFrame:CGRectMake(0,0,[UIScreen mainScreen].applicationFrame.size.width,40)]];
         
 		[self initToolbar];
 	}else {
 		rightItemButton.title = @"编辑";
 		isEditableOrNot = 0;
 		[toolBar removeFromSuperview]; 
-		[table setTableFooterView:[[[UIView alloc] initWithFrame:CGRectZero] autorelease]];
+		[table setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 		[table reloadData];
 	}	
 	//	[self dismissModalViewControllerAnimated:YES];
@@ -419,10 +422,10 @@
 	titleLabel.text = @"所有联系人";
 	titleLabel.textAlignment = UITextAlignmentCenter;
 	self.navigationItem.titleView = titleLabel;
-    [titleLabel release];
+    //[titleLabel release];
 //	self.navigationItem.title = @"所有联系人";
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(backBtnClicked)] autorelease];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(rightButtonClick:)] autorelease];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(backBtnClicked)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(rightButtonClick:)];
 	self.navigationController.navigationBar.tintColor = [UIColor blackColor];  
 }
 
@@ -524,7 +527,7 @@
     static NSString *CellIdentifier = @"Cell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		//cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 
@@ -532,11 +535,11 @@
 	NSInteger section = [indexPath section];
 	NSString* key = [keys objectAtIndex:section];
 	NSArray* value = [names objectForKey:key];
-	ABRecordRef record = [value objectAtIndex:row];
+	ABRecordRef record = (__bridge ABRecordRef)([value objectAtIndex:row]);
 	if (record) {
-		NSString *nameStr = (NSString *)ABRecordCopyCompositeName(record);
+		NSString *nameStr = (__bridge NSString *)ABRecordCopyCompositeName(record);
 		cell.textLabel.text = nameStr;
-        [nameStr release];
+        //[nameStr release];
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	if(isEditableOrNot) {  
@@ -547,7 +550,7 @@
 			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
-            [imageView release];
+            //[imageView release];
 		}
 		else {
             UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
@@ -573,7 +576,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section 
 { 
-	UIView* customView = [[[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, tableView.bounds.size.width, 22.0)] autorelease];
+	UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, tableView.bounds.size.width, 22.0)];
 	
 	UILabel * headerLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 	headerLabel.backgroundColor = [UIColor grayColor];
@@ -584,7 +587,7 @@
 	headerLabel.frame = CGRectMake(0.0, 0.0,tableView.bounds.size.width, 22.0);
 	headerLabel.text = [keys objectAtIndex:section];
 	[customView addSubview:headerLabel];
-    [headerLabel release];
+    //[headerLabel release];
 	return customView;
 }
 
@@ -647,7 +650,7 @@
 			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
-            [imageView release];
+            //[imageView release];
 			[selectNames setObject:@"1" forKey:key];
 		} 
 
@@ -685,18 +688,18 @@
 
 
 - (void)dealloc {
-	[table release];
-	[sourceArray release];
-	[keyArray release];
-	[allPeoples release];
-	[keys release];
-	[names release];
-	[selectNames release];
-	[mySearchBar release];
-	[toolBar release];
-	[callBack release];
+//	[table release];
+//	[sourceArray release];
+//	[keyArray release];
+//	[allPeoples release];
+//	[keys release];
+//	[names release];
+//	[selectNames release];
+//	[mySearchBar release];
+//	[toolBar release];
+//	[callBack release];
     CFRelease(addressBook);
-    [super dealloc];
+    //[super dealloc];
 }
 
 

@@ -34,15 +34,15 @@
 
 -(void)dealloc {
     if (contact) {
-        [contact release];
+        //[contact release];
         contact = nil;
     }
     contact = nil;
     if (actionArray) {
-        [actionArray release];
+        //[actionArray release];
         actionArray = nil;
     }
-    [super dealloc];
+    //[super dealloc];
 }
 
 -(BOOL)check_Authorization {
@@ -81,7 +81,7 @@
 -(void)showAlertViewMessage {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前应用无访问通讯录权限\n 请在 设置->隐私->通讯录 中开启访问权限！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alert show];
-    [alert release];
+    //[alert release];
 }
 
 -(void)open:(NSMutableArray *)inArguments {
@@ -99,18 +99,18 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
     alert.tag = ID;
     [alert show];
-    [alert release];
+    //[alert release];
 }
 
 -(void)addItem:(NSMutableArray *)inArguments {
+    ACArgsUnpack(NSString *name,NSString *num,NSString *email,NSDictionary *isNeedAlert) = inArguments;
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     self.fun = func;
     if ([self check_Authorization]) {
         actionArray = [[NSArray alloc] initWithArray:inArguments];
         BOOL isNeedAlertDialog=YES;
-        
         if(inArguments.count>4){
-            NSDictionary *isNeedAlert=[inArguments[3] JSONValue];
+           // NSDictionary *isNeedAlert=[inArguments[3] ac_JSONValue];
             if(isNeedAlert){
                 isNeedAlertDialog=[[isNeedAlert objectForKey:@"isNeedAlertDialog"] boolValue];
             }
@@ -119,7 +119,7 @@
             [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:111];
         }
         else{
-            [self addItemWithName:[actionArray objectAtIndex:0] phoneNum:[actionArray objectAtIndex:1] phoneEmail:[actionArray objectAtIndex:2]];
+            [self addItemWithName:name phoneNum:num phoneEmail:email];
         }
     }else{
         [self showAlertViewMessage];
@@ -132,14 +132,13 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(NO))];
-        self.fun = nil;
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
     } else {
         //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(YES))];
-        self.fun = nil;
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
     }
+        self.fun = nil;
 }
 
 -(void)addItemWithVCard:(NSMutableArray *)inArguments {
@@ -156,7 +155,6 @@
                 if (1 == [isShowAV intValue]) {
                     [self addItemWithVCard_String:[inArguments objectAtIndex:0]];
                     if (actionArray) {
-                        [actionArray release];
                         actionArray = nil;
                     }
                 } else {
@@ -176,12 +174,12 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(NO))];
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
         self.fun = nil;
     } else {
         //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(YES))];
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
         self.fun = nil;
     }
 }
@@ -203,21 +201,24 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbDeleteItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(NO))];
-        self.fun = nil;
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
+        
     } else {
         //[self jsSuccessWithName:@"uexContact.cbDeleteItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(YES))];
-        self.fun = nil;
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,@0)];
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
+        
     }
+        self.fun = nil;
 }
 
 // 通过ID删除联系人
--(void)deleteWithId:(NSMutableArray *)inArguments
-{
+-(void)deleteWithId:(NSMutableArray *)inArguments{
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.fun = func;
     if ([self check_Authorization]) {
-        NSDictionary *dic = [[inArguments objectAtIndex:0] JSONValue];
+        //NSDictionary *dic = [[inArguments objectAtIndex:0] ac_JSONValue];
+        ACArgsUnpack(NSDictionary *dic) = inArguments;
         recordID = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"contactId"]] intValue];
         [self showAlertView:@"应用程序需要删除联系人信息，是否确认删除？" alertID:555];
     }
@@ -233,10 +234,14 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbDeleteWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteWithId" arguments:ACArgsPack(@0,@2,@1)];
+         [self.fun executeWithArguments:ACArgsPack(@(1))];
+        
     } else {
         //[self jsSuccessWithName:@"uexContact.cbDeleteWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteWithId" arguments:ACArgsPack(@0,@2,@0)];
+         [self.fun executeWithArguments:ACArgsPack(@(0))];
     }
+    self.fun = nil;
     recordID = 0;
 }
 
@@ -244,12 +249,13 @@
 
 -(void)searchItem:(NSMutableArray *)inArguments {
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    ACArgsUnpack(NSString*nameKey,NSDictionary*option) = inArguments;
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     if ([self check_Authorization]) {
-        NSString * inName = [inArguments objectAtIndex:0];
+        NSString * inName = nameKey;//[inArguments objectAtIndex:0];
         int resultNum=50;
-        if(inArguments.count>2){
-            NSDictionary *option=[[inArguments objectAtIndex:1] JSONValue];
+        if(inArguments.count>1){
+           // NSDictionary *option=[[inArguments objectAtIndex:1] ac_JSONValue];
             if(option){
                 resultNum=[[option objectForKey:@"resultNum"] intValue];
                 if ([option objectForKey:@"isSearchAddress"] != nil) {
@@ -291,18 +297,18 @@
                 }
                 NSArray * subArray = [array subarrayWithRange:range];
                 if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
-                    NSString * jsonResult = [subArray JSONFragment];
+                    NSString * jsonResult = [subArray ac_JSONFragment];
                     if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
                         //处理换行符；
                         //jsonResult=[jsonResult stringByReplacingOccurrencesOfString:@"\\n" withString:@" "];
                     //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
                     [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,jsonResult)];
-                    [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                    [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
                     func = nil;
                     } else {
                         //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
                         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,@"")];
-                        [func executeWithArguments:ACArgsPack(nil)];
+                        [func executeWithArguments:ACArgsPack(@(1),@"")];
                         func = nil;
                     }
                     user = nil;
@@ -313,12 +319,12 @@
             if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
                 //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
                 [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,jsonResult)];
-                [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
                 func = nil;
             } else {
                 //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
                 [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,@"")];
-                [func executeWithArguments:ACArgsPack(nil)];
+                [func executeWithArguments:ACArgsPack(@(1),@"")];
                 func = nil;
             }
             user = nil;
@@ -333,8 +339,9 @@
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     
     if ([self check_Authorization]) {
-        NSDictionary *option = [[inArguments objectAtIndex:0] JSONValue];
-        int contactId;
+        //NSDictionary *option = [[inArguments objectAtIndex:0] ac_JSONValue];
+        ACArgsUnpack(NSDictionary *option) = inArguments;
+        int contactId = -1;
         int resultNum=50;
         resultNum=[[option objectForKey:@"resultNum"] intValue];
         if ([option objectForKey:@"isSearchAddress"] != nil) {
@@ -358,23 +365,34 @@
         if ([option objectForKey:@"isSearchUrl"] != nil) {
             contact.isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
         }
+        if ([option objectForKey:@"contactId"] != nil) {
+            contactId = [[option objectForKey:@"contactId"]intValue];
+        }
         if ([option objectForKey:@"searchName"] != nil) {
             _searchName = [NSString stringWithFormat:@"%@",[option objectForKey:@"searchName"]];
+        }else{
+            _searchName = @"";
         }
-        contactId = [[option objectForKey:@"contactId"]intValue];
         if (contactId > 0) {
             NSString *jsonResult =[contact search:contactId];
+            
             if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
                // NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
                 //[EUtility brwView:meBrwView evaluateScript:jsonStr];
                 [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                NSDictionary *resultDic = [jsonResult ac_JSONValue];
+                if ([resultDic[@"result"] isEqualToString:@"0"]) {
+                  [func executeWithArguments:ACArgsPack(@(0),resultDic[@"contactList"])];
+                }else{
+                  [func executeWithArguments:ACArgsPack(@(1),nil)]; 
+                }
+                
                 func = nil;
             } else {
                 //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
                // [EUtility brwView:meBrwView evaluateScript:jsonStr];
-                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(@"")];
+                [func executeWithArguments:ACArgsPack(@(1),nil)];
                 func = nil;
             }
         }
@@ -397,19 +415,19 @@
                     }
                     NSArray * subArray = [array subarrayWithRange:range];
                     if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
-                        NSString * jsonResult = [subArray JSONFragment];
+                        NSString * jsonResult = [subArray ac_JSONFragment];
                         if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
                             //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
                             //[EUtility brwView:meBrwView evaluateScript:jsonStr];
                             [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                            [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                            [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
                             func = nil;
                             
                         } else {
                             //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
                             //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                            [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                            [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                            [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(@"")];
+                            [func executeWithArguments:ACArgsPack(@(1),nil)];
                             func = nil;
                         }
                     }
@@ -420,14 +438,14 @@
                    // NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
                     //[EUtility brwView:meBrwView evaluateScript:jsonStr];
                     [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                    [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                    [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
                     func = nil;
                     
                 } else {
                     //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
                     //[EUtility brwView:meBrwView evaluateScript:jsonStr];
                     [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                    [func executeWithArguments:ACArgsPack([jsonResult ac_JSONValue])];
+                    [func executeWithArguments:ACArgsPack(@(1),nil)];
                     func = nil;
                 }
             }
@@ -451,7 +469,7 @@
     }
 }
 -(void)modifyItemWithId:(NSArray *)array{
-    NSDictionary *diction = [[array objectAtIndex:0] JSONValue];
+    NSDictionary *diction = [[array objectAtIndex:0] ac_JSONValue];
     int recordId = [[NSString stringWithFormat:@"%@",[diction objectForKey:@"contactId"]] intValue];
     NSString *name = [NSString stringWithFormat:@"%@",[diction objectForKey:@"name"]];
     NSString *num  = [NSString stringWithFormat:@"%@",[diction objectForKey:@"num"]];
@@ -461,12 +479,12 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbModifyWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyWithId" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(NO))];
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
         self.fun = nil;
     } else {
         //[self jsSuccessWithName:@"uexContact.cbModifyWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyWithId" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(YES))];
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
         self.fun = nil;
     }
 }
@@ -497,11 +515,12 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@1)];
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
         
     } else {
         //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@0)];
-        
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
     }
     
 }
@@ -514,12 +533,12 @@
         //失败
         //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(NO))];
+        [self.fun executeWithArguments:ACArgsPack(@(1))];
         self.fun = nil;
     } else {
         //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(YES))];
+        [self.fun executeWithArguments:ACArgsPack(@(0))];
         self.fun = nil;
     }
 }
@@ -533,8 +552,8 @@
         UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:contactView];
         //[EUtility brwView:[super meBrwView] presentModalViewController:nav animated:(BOOL)YES];
         [[[super webViewEngine] viewController] presentViewController:nav animated:YES completion:nil];
-        [nav release];
-        [contactView release];
+        //[nav release];
+        //[contactView release];
     } else {
         [self showAlertViewMessage];
     }
@@ -569,7 +588,7 @@
         }
     }
     if (actionArray) {
-        [actionArray release];
+        //[actionArray release];
         actionArray = nil;
     }
 }
@@ -578,9 +597,11 @@
     if (inData) {
         //[self jsSuccessWithName:@"uexContact.cbOpen" opId:inOpId dataType:inDataType strData:inData];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbOpen" arguments:ACArgsPack(@(inOpId),@(inDataType),inData)];
-        [self.fun executeWithArguments:ACArgsPack([inData ac_JSONValue])];
-        self.fun = nil;
+        [self.fun executeWithArguments:ACArgsPack(@(0),[inData ac_JSONValue])];
+    }else{
+        [self.fun executeWithArguments:ACArgsPack(@(1),nil)];
     }
+         self.fun = nil;
 }
 
 @end
