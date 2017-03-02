@@ -6,11 +6,7 @@
 	<dict>
 		<key>Info.plist</key>
 		<data>
-		vdNnmlod+cmaelKAtiKaFWN1O68=
-		</data>
-		<key>embedded.mobileprovision</key>
-		<data>
-		VccYRc8+LJpEK2ajGtgIir/pOpk=
+		PT1nd1fRmHuOBqWJuscgdZW48yo=
 		</data>
 		<key>uexContact.bundle/plugin_contact_selected.png</key>
 		<data>
@@ -23,17 +19,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>embedded.mobileprovision</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			VccYRc8+LJpEK2ajGtgIir/pOpk=
-			</data>
-			<key>hash2</key>
-			<data>
-			ejCBtnGtWqhlrYI4GRjoMJxaexgdSnhjWGPR+Vc9frw=
-			</data>
-		</dict>
 		<key>uexContact.bundle/plugin_contact_selected.png</key>
 		<dict>
 			<key>hash</key>
@@ -74,6 +59,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -119,6 +109,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^Info\.plist$</key>
 		<dict>

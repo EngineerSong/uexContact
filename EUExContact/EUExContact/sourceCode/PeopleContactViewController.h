@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-
+#import <AddressBook/AddressBook.h>
 @interface PeopleContactViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>{
 	UITableView * table;
 	NSArray *sourceArray;

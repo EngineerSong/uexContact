@@ -1,607 +1,838 @@
-
-//
-//  EUEXContact.m
-//  AppCan
-//
-//  Created by AppCan on 11-9-20.
-//  Copyright 2011 AppCan. All rights reserved.
-//
+/**
+ *
+ *	@file   	: EUExContact.m  in EUExContact
+ *
+ *	@author 	: CeriNo
+ *
+ *	@date   	: 2017/2/27
+ *
+ *	@copyright 	: 2017 The AppCan Open Source Project.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #import "EUExContact.h"
-#import "Contact.h"
-#import "EUtility.h"
-#import "EUExBaseDefine.h"
 #import "PeopleContactViewController.h"
+#import <objc/runtime.h>
+#import <AddressBook/AddressBook.h>
+#import <AddressBookUI/AddressBookUI.h>
+#import <AppCanKit/ACEXTScope.h>
+
+#define AUTH_ERROR (uexErrorMake(1,@"访问通讯录权限受限!"))
+
+#define UexPropertyDefine(__class,__name)\
+    property (nonatomic, strong, setter=set__##__name:, getter=__##__name) __class __name;
+
+#define UexPropertySynthesize(__class,__name) \
+    dynamic __name;\
+    \
+    - (__class)metamacro_concat(__,__name){\
+        return objc_getAssociatedObject(self,_cmd);\
+    }\
+    \
+    - (void)metamacro_concat(set__,__name):(__class)__name{\
+        objc_setAssociatedObject(self, @selector(metamacro_concat(__,__name)), __name, OBJC_ASSOCIATION_RETAIN_NONATOMIC);\
+    }
+
+static NSString *const kUexContactPersonInfoNameKey         = @"name";
+static NSString *const kUexContactPersonInfoPhoneNumberKey  = @"num";
+static NSString *const kUexContactPersonInfoEmailKey        = @"email";
+static NSString *const kUexContactPersonInfoAddressKey      = @"address";
+static NSString *const kUexContactPersonInfoCompanyKey      = @"company";
+static NSString *const kUexContactPersonInfoJobTitleKey     = @"title";
+static NSString *const kUexContactPersonInfoNoteKey         = @"note";
+static NSString *const kUexContactPersonInfoURLKey          = @"url";
+static NSString *const kUexContactPersonInfoContactIDKey    = @"contactId";
+
+typedef void (^uexContactActionBlock)();
+
+typedef NS_OPTIONS(NSInteger, UexContactPersonSearchOptions) {
+    UexContactPersonSearchDefault       = 0,
+    UexContactPersonSearchEmail         = 1 << 0,
+    UexContactPersonSearchPhoneNumber   = 1 << 1,
+    UexContactPersonSearchAddress       = 1 << 2,
+    UexContactPersonSearchCompany       = 1 << 3,
+    UexContactPersonSearchJobTitle      = 1 << 4,
+    UexContactPersonSearchNote          = 1 << 5,
+    UexContactPersonSearchURL           = 1 << 6,
+    UexContactPersonSearchAll           = NSIntegerMax,
+};
 
 
-@interface EUExContact()
-@property(nonatomic,strong)ACJSFunctionRef*fun;
+
+
+@interface UIAlertView (uexContact)
+@UexPropertyDefine(uexContactActionBlock,uexContact_confirmAction)
+@UexPropertyDefine(uexContactActionBlock,uexContact_cancelAction)
 @end
+
+@implementation UIAlertView (uexContact)
+@UexPropertySynthesize(uexContactActionBlock,uexContact_confirmAction)
+@UexPropertySynthesize(uexContactActionBlock,uexContact_cancelAction)
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@interface EUExContact()<UIAlertViewDelegate,ABPeoplePickerNavigationControllerDelegate>
+@property(nonatomic,strong)ACJSFunctionRef*fun;
+
+@property (nonatomic,strong)NSString *searchName;
+@property (nonatomic,strong)Contact *contact;
+@property (nonatomic,strong)NSArray *actionArray;
+@property (nonatomic,assign)int32_t recordID;
+@property (nonatomic,strong)ACJSFunctionRef *openCallback;
+@property (nonatomic,strong)ABPeoplePickerNavigationController *openController;
+@end
+
 @implementation EUExContact
 
-//-(id)initWithBrwView:(EBrowserView *) eInBrwView {
-//    if (self = [super initWithBrwView:eInBrwView]) {
-//        contact = [[Contact alloc] init];
-//    }
-//    return self;
-//}
--(id)initWithWebViewEngine:(id<AppCanWebViewEngineObject>)engine{
+#pragma mark - Life Cycle
+
+- (instancetype)initWithWebViewEngine:(id<AppCanWebViewEngineObject>)engine{
     if (self = [super initWithWebViewEngine:engine]) {
-        contact = [[Contact alloc] init];
+
     }
     return self;
 }
 
--(void)dealloc {
-    if (contact) {
-        //[contact release];
-        contact = nil;
-    }
-    contact = nil;
-    if (actionArray) {
-        //[actionArray release];
-        actionArray = nil;
-    }
-    //[super dealloc];
+- (void)dealloc {
+
+    _contact = nil;
+    _actionArray = nil;
+
 }
 
--(BOOL)check_Authorization {
-    __block BOOL resultBool = NO;
-    float fOSVersion = [[UIDevice currentDevice].systemVersion floatValue];
-    if (fOSVersion > 5.9f) {
-        ABAddressBookRef book = ABAddressBookCreateWithOptions(NULL, NULL);
-        ABAuthorizationStatus addressAccessStatus = ABAddressBookGetAuthorizationStatus();
-        switch (addressAccessStatus) {
-            case kABAuthorizationStatusAuthorized:
-                resultBool = YES;
+
+
+
+
+
+
+
+#pragma mark - UIAlertViewDelegate
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        if (alertView.uexContact_cancelAction) {
+            alertView.uexContact_cancelAction();
+        }
+    }
+    if (buttonIndex == 1) {
+        if (alertView.uexContact_confirmAction) {
+            alertView.uexContact_confirmAction();
+        }
+    }
+    
+    
+    
+}
+
+#pragma mark - ABPeoplePickerNavigationControllerDelegate
+
+// Called after a person has been selected by the user.
+- (void)peoplePickerNavigationController:(ABPeoplePickerNavigationController*)peoplePicker didSelectPerson:(ABRecordRef)person{
+    
+    NSDictionary *result = ABPersonParseWithOptions(person, UexContactPersonSearchAll);
+    [peoplePicker dismissViewControllerAnimated:YES completion:^{
+        self.openController = nil;
+        [self.openCallback executeWithArguments:ACArgsPack(kUexNoError,result)];
+        self.openCallback = nil;
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbOpen" arguments:ACArgsPack(@0,@1,result.ac_JSONFragment)];
+    }];
+    
+}
+
+// Called after the user has pressed cancel.
+- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker{
+    [peoplePicker dismissViewControllerAnimated:YES completion:^{
+        self.openController = nil;
+        [self.openCallback executeWithArguments:ACArgsPack(uexErrorMake(-1,@"用户取消选择"))];
+    }];
+}
+
+
+
+
+#pragma mark - Private Helper
+
+/// Check Authorization
+- (void)checkAuthorizationSuccess:(uexContactActionBlock)success failure:(void (^)(uexContactActionBlock showAlert))failure{
+    uexContactActionBlock showAlert = ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前应用无访问通讯录权限\n 请在 设置->隐私->通讯录 中开启访问权限！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        });
+    };
+    
+    void (^completion)(BOOL) = ^(BOOL isAuthorized){
+        if (isAuthorized) {
+            if (success) {
+                success();
+            }
+        }else{
+            if (failure) {
+                failure(showAlert);
+            }
+        }
+    };
+    
+    ABAddressBookRef book = ABAddressBookCreateWithOptions(NULL, NULL);
+    ABAuthorizationStatus addressAccessStatus = ABAddressBookGetAuthorizationStatus();
+    switch (addressAccessStatus) {
+        case kABAuthorizationStatusAuthorized:
+            completion(YES);
+            break;
+        case kABAuthorizationStatusNotDetermined:{
+            ABAddressBookRequestAccessWithCompletion(book, ^(bool granted, CFErrorRef error) {
+                completion(granted);
+            });
+        }
+            break;
+        default:
+            completion(NO);
+            break;
+    }
+    if (book) {
+        CFRelease(book);
+    }
+    
+    
+}
+
+/// Show Alert
+- (void)showAlertViewWithMessage:(NSString *)message confirmAction:(uexContactActionBlock)confirmAction cancalAction:(uexContactActionBlock)cancelAction{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
+        alert.uexContact_confirmAction = confirmAction;
+        alert.uexContact_cancelAction = cancelAction;
+        alert.delegate = self;
+        [alert show];
+    });
+}
+
+
+//
+
+
+- (UexContactPersonSearchOptions)optionsFromDict:(NSDictionary *)dict{
+    __block UexContactPersonSearchOptions options = UexContactPersonSearchDefault;
+    NSDictionary<NSString *,NSNumber *> *map = @{
+                          @"isSearchNum": @(UexContactPersonSearchPhoneNumber),
+                          @"isSearchEmail": @(UexContactPersonSearchEmail),
+                          @"isSearchAddress": @(UexContactPersonSearchAddress),
+                          @"isSearchCompany": @(UexContactPersonSearchCompany),
+                          @"isSearchTitle": @(UexContactPersonSearchJobTitle),
+                          @"isSearchNote": @(UexContactPersonSearchNote),
+                          @"isSearchUrl":   @(UexContactPersonSearchURL)
+                          };
+    [map enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSNumber * _Nonnull obj, BOOL * _Nonnull stop) {
+        NSNumber *ret = numberArg(dict[key]);
+        if (!ret || ret.boolValue) {
+            options |= obj.integerValue;
+        }
+    }];
+    
+    return options;
+    
+}
+
+
+
+#pragma mark - AddressBook Utility
+
+/// Parse ABRecordRef
+static NSDictionary *ABPersonParseWithOptions(ABRecordRef person,UexContactPersonSearchOptions options){
+    
+    
+    
+    //ABMultiValueRef parser
+    NSString * _Nullable(^multiValueParser)(ABPropertyID) = ^NSString * _Nullable(ABPropertyID property){
+        ABMultiValueRef multiValue = ABRecordCopyValue(person, property);
+        NSString *result = nil;
+        if (multiValue) {
+            if (ABMultiValueGetCount(multiValue) > 0) {
+                result = (__bridge_transfer NSString *)ABMultiValueCopyValueAtIndex(multiValue, 0);
+            }
+            CFRelease(multiValue);
+        }
+        return result;
+        
+    };
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    [dict setValue:(__bridge_transfer NSString *)ABRecordCopyCompositeName(person) forKey:kUexContactPersonInfoNameKey];
+    [dict setValue:@(ABRecordGetRecordID(person)).stringValue forKey:kUexContactPersonInfoContactIDKey];
+    
+    if (options & UexContactPersonSearchPhoneNumber) {
+        ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
+        if (phoneNumbers) {
+            [dict setValue:(__bridge_transfer NSArray *)ABMultiValueCopyArrayOfAllValues(phoneNumbers) forKey:kUexContactPersonInfoPhoneNumberKey];
+            CFRelease(phoneNumbers);
+        }
+    }
+    if (options & UexContactPersonSearchEmail) {
+        [dict setValue:multiValueParser(kABPersonEmailProperty) forKey:kUexContactPersonInfoEmailKey];
+    }
+    if (options & UexContactPersonSearchAddress) {
+        [dict setValue:multiValueParser(kABPersonAddressProperty) forKey:kUexContactPersonInfoAddressKey];
+    }
+    if (options & UexContactPersonSearchCompany) {
+        [dict setValue:(__bridge_transfer NSString *)ABRecordCopyValue(person,kABPersonOrganizationProperty) forKey:kUexContactPersonInfoCompanyKey];
+    }
+    if (options & UexContactPersonSearchJobTitle) {
+        [dict setValue:(__bridge_transfer NSString *)ABRecordCopyValue(person,kABPersonJobTitleProperty) forKey:kUexContactPersonInfoJobTitleKey];
+    }
+    if (options & UexContactPersonSearchURL) {
+        [dict setValue:multiValueParser(kABPersonURLProperty) forKey:kUexContactPersonInfoURLKey];
+    }
+    if (options & UexContactPersonSearchNote) {
+        [dict setValue:(__bridge_transfer NSString *)ABRecordCopyValue(person,kABPersonNoteProperty) forKey:kUexContactPersonInfoNoteKey];
+    }
+    return [dict copy];
+};
+
+///Set Item
+
+static BOOL ABPersonSetPhoneNumber(ABRecordRef person,NSString *phoneNumberString){
+    NSArray *numbers = [phoneNumberString componentsSeparatedByString:@";"];
+    ABMutableMultiValueRef numberRef = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    if (!numberRef) {
+        return NO;
+    }
+    @onExit{
+        CFRelease(numberRef);
+    };
+    
+    ABMultiValueIdentifier identidier;
+    for(NSInteger i = 0; i < numbers.count; i++){
+        switch (i) {
+            case 0:
+                ABMultiValueAddValueAndLabel(numberRef, (__bridge CFStringRef)numbers[i], kABPersonPhoneMainLabel, &identidier);
                 break;
-            case kABAuthorizationStatusNotDetermined:
-                ABAddressBookRequestAccessWithCompletion(book, ^(bool granted, CFErrorRef error) {
-                    if (granted) {
-                        resultBool = YES;
-                    }
-                });
-                break;
-            case kABAuthorizationStatusRestricted:
-                break;
-            case kABAuthorizationStatusDenied:
+            case 1:
+                ABMultiValueAddValueAndLabel(numberRef, (__bridge CFStringRef)numbers[i], kABPersonPhoneMobileLabel, &identidier);
                 break;
             default:
+                ABMultiValueAddValueAndLabel(numberRef, (__bridge CFStringRef)numbers[i], kABPersonPhoneHomeFAXLabel, &identidier);
                 break;
         }
-        if (book) {
-            CFRelease(book);
-        }
-    } else {
-        resultBool = YES;
     }
-    return resultBool;
+    return ABRecordSetValue(person, kABPersonPhoneProperty, numberRef, NULL);
 }
 
--(void)showAlertViewMessage {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"当前应用无访问通讯录权限\n 请在 设置->隐私->通讯录 中开启访问权限！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
-    [alert show];
-    //[alert release];
-}
 
--(void)open:(NSMutableArray *)inArguments {
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        //打开通讯录
-        [contact openItemWithUEx:self];
-    }else{
-        [self showAlertViewMessage];
+static BOOL ABPersonSetEmail(ABRecordRef person,NSString *email){
+
+    ABMutableMultiValueRef emailRef = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    if (!emailRef) {
+        return NO;
     }
+    @onExit{
+        CFRelease(emailRef);
+    };
+    ABMultiValueAddValueAndLabel(emailRef, (__bridge CFStringRef)email, kABOtherLabel, NULL);
+    return ABRecordSetValue(person, kABPersonEmailProperty, emailRef, NULL);
 }
 
--(void)showAlertView:(NSString *)message alertID:(int)ID{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:message delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
-    alert.tag = ID;
-    [alert show];
-    //[alert release];
-}
-
--(void)addItem:(NSMutableArray *)inArguments {
-    ACArgsUnpack(NSString *name,NSString *num,NSString *email,NSDictionary *isNeedAlert) = inArguments;
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        actionArray = [[NSArray alloc] initWithArray:inArguments];
-        BOOL isNeedAlertDialog=YES;
-        if(inArguments.count>4){
-           // NSDictionary *isNeedAlert=[inArguments[3] ac_JSONValue];
-            if(isNeedAlert){
-                isNeedAlertDialog=[[isNeedAlert objectForKey:@"isNeedAlertDialog"] boolValue];
-            }
-        }
-        if(isNeedAlertDialog){
-            [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:111];
-        }
-        else{
-            [self addItemWithName:name phoneNum:num phoneEmail:email];
-        }
-    }else{
-        [self showAlertViewMessage];
-    }
-}
-
--(void)addItemWithName:(NSString *)inName phoneNum:(NSString *)inNum  phoneEmail:(NSString *)inEmail {
-    BOOL result = [contact addItem:inName phoneNum:inNum phoneEmail:inEmail];
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-    }
-        self.fun = nil;
-}
-
--(void)addItemWithVCard:(NSMutableArray *)inArguments {
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        if (inArguments && [inArguments count] > 0) {
-            if (2 == [inArguments count]) {
-                actionArray = [[NSArray alloc] initWithArray:inArguments];
-            } else if(3 == [inArguments count]){
-                NSArray * array = [inArguments subarrayWithRange:NSMakeRange(0, 1)];
-                actionArray = [[NSArray alloc] initWithArray:array];
-                NSString * isShowAV = [inArguments objectAtIndex:1];
-                if (1 == [isShowAV intValue]) {
-                    [self addItemWithVCard_String:[inArguments objectAtIndex:0]];
-                    if (actionArray) {
-                        actionArray = nil;
-                    }
-                } else {
-                    [self showAlertView:@"应用程序需要添加联系人信息，是否确认添加？" alertID:112];
-                }
-            }
-        }
-    } else {
-        [self showAlertViewMessage];
-    }
-}
-
--(void)addItemWithVCard_String:(NSString *)vcCardStr {
-    BOOL result = [contact addItemWithVCard:vcCardStr];
+/*
+static BOOL ABPersonSetAddress(ABRecordRef person,NSString *address){
     
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
-        self.fun = nil;
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbAddItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-        self.fun = nil;
+    ABMutableMultiValueRef addressRef = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    if (!addressRef) {
+        return NO;
     }
-}
-
--(void)deleteItem:(NSMutableArray *)inArguments {
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        actionArray = [[NSArray alloc] initWithArray:inArguments];
-        [self showAlertView:@"应用程序需要删除联系人信息，是否确认删除？" alertID:222];
-    } else {
-        [self showAlertViewMessage];
-    }
-}
-
--(void)deleteItemWithName:(NSString *)inName {
-    BOOL result = [contact deleteItem:inName];
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbDeleteItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
-        
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbDeleteItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-        
-    }
-        self.fun = nil;
-}
-
-// 通过ID删除联系人
--(void)deleteWithId:(NSMutableArray *)inArguments{
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        //NSDictionary *dic = [[inArguments objectAtIndex:0] ac_JSONValue];
-        ACArgsUnpack(NSDictionary *dic) = inArguments;
-        recordID = [[NSString stringWithFormat:@"%@",[dic objectForKey:@"contactId"]] intValue];
-        [self showAlertView:@"应用程序需要删除联系人信息，是否确认删除？" alertID:555];
-    }
-    else
-    {
-        [self showAlertViewMessage];
-    }
-}
-- (void)deleteItemWithID:(int)ids
-{
-    BOOL result = [contact deleteItemWithId:ids];
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbDeleteWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteWithId" arguments:ACArgsPack(@0,@2,@1)];
-         [self.fun executeWithArguments:ACArgsPack(@(1))];
-        
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbDeleteWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteWithId" arguments:ACArgsPack(@0,@2,@0)];
-         [self.fun executeWithArguments:ACArgsPack(@(0))];
-    }
-    self.fun = nil;
-    recordID = 0;
+    @onExit{
+        CFRelease(addressRef);
+    };
+    ABMultiValueAddValueAndLabel(addressRef, (__bridge CFStringRef)address, kABWorkLabel, NULL);
+    return ABRecordSetValue(person, kABPersonAddressProperty, addressRef, NULL);
 }
 
 
-
--(void)searchItem:(NSMutableArray *)inArguments {
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    ACArgsUnpack(NSString*nameKey,NSDictionary*option) = inArguments;
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    if ([self check_Authorization]) {
-        NSString * inName = nameKey;//[inArguments objectAtIndex:0];
-        int resultNum=50;
-        if(inArguments.count>1){
-           // NSDictionary *option=[[inArguments objectAtIndex:1] ac_JSONValue];
-            if(option){
-                resultNum=[[option objectForKey:@"resultNum"] intValue];
-                if ([option objectForKey:@"isSearchAddress"] != nil) {
-                    contact.isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
-                }
-                if ([option objectForKey:@"isSearchCompany"] != nil) {
-                    contact.isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]]; 
-                }
-                if ([option objectForKey:@"isSearchEmail"] != nil) {
-                    contact.isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
-                }
-                if ([option objectForKey:@"isSearchNote"] != nil) {
-                    contact.isSearchNote = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
-                }
-                if ([option objectForKey:@"isSearchNum"] != nil) {
-                    contact.isSearchNum = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
-                }
-                if ([option objectForKey:@"isSearchTitle"] != nil) {
-                    contact.isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
-                }
-                if ([option objectForKey:@"isSearchUrl"] != nil) {
-                    contact.isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
-                }
-            }
-        }
-        if (0 == [inName length]) {//传入名字为空时，就查找所有联系人
-            NSMutableArray * array = [contact searchItem_all];
-            if ([array isKindOfClass:[NSMutableArray class]] && [array count] > 0) {
-                int count = (int)[array count];
-                NSRange range;
-                if (resultNum >0) {
-                    range = NSMakeRange(0, resultNum);
-                }
-                else if (resultNum == -1) {
-                    range = NSMakeRange(0, count);
-                }
-                else{
-                    range = NSMakeRange(0, 50);
-                }
-                NSArray * subArray = [array subarrayWithRange:range];
-                if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
-                    NSString * jsonResult = [subArray ac_JSONFragment];
-                    if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                        //处理换行符；
-                        //jsonResult=[jsonResult stringByReplacingOccurrencesOfString:@"\\n" withString:@" "];
-                    //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
-                    [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,jsonResult)];
-                    [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
-                    func = nil;
-                    } else {
-                        //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
-                        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,@"")];
-                        [func executeWithArguments:ACArgsPack(@(1),@"")];
-                        func = nil;
-                    }
-                    user = nil;
-                }
-            }
-        } else {
-            NSString * jsonResult = [contact searchItem:inName resultNum:resultNum];
-            if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:jsonResult];
-                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,jsonResult)];
-                [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
-                func = nil;
-            } else {
-                //[self jsSuccessWithName:@"uexContact.cbSearchItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:@""];
-                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,@"")];
-                [func executeWithArguments:ACArgsPack(@(1),@"")];
-                func = nil;
-            }
-            user = nil;
-        }
-    } else {
-        [self showAlertViewMessage];
-    }
-}
-// 通过ID查询
--(void)search:(NSMutableArray *)inArguments
-{
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+static BOOL ABPersonSetURL(ABRecordRef person,NSString *url){
     
-    if ([self check_Authorization]) {
-        //NSDictionary *option = [[inArguments objectAtIndex:0] ac_JSONValue];
-        ACArgsUnpack(NSDictionary *option) = inArguments;
-        int contactId = -1;
-        int resultNum=50;
-        resultNum=[[option objectForKey:@"resultNum"] intValue];
-        if ([option objectForKey:@"isSearchAddress"] != nil) {
-            contact.isSearchAddress = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchAddress"]boolValue]];
+    ABMutableMultiValueRef urlRef = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    if (!urlRef) {
+        return NO;
+    }
+    @onExit{
+        CFRelease(urlRef);
+    };
+    ABMultiValueAddValueAndLabel(urlRef, (__bridge CFStringRef)url, kABPersonHomePageLabel, NULL);
+    return ABRecordSetValue(person, kABPersonURLProperty, urlRef, NULL);
+}
+
+static BOOL ABPersonSetCompany(ABRecordRef person,NSString *company){
+    return ABRecordSetValue(person, kABPersonOrganizationProperty, (__bridge CFStringRef)company, NULL);
+}
+
+static BOOL ABPersonSetJobTitle(ABRecordRef person,NSString *jobTitle){
+    return ABRecordSetValue(person, kABPersonJobTitleProperty, (__bridge CFStringRef)jobTitle, NULL);
+}
+static BOOL ABPersonSetNote(ABRecordRef person,NSString *note){
+    return ABRecordSetValue(person, kABPersonNoteProperty, (__bridge CFStringRef)note, NULL);
+}
+
+
+
+
+
+*/
+
+
+#pragma mark - Public API
+
+- (void)open:(NSMutableArray *)inArguments {
+    
+    ACArgsUnpack(ACJSFunctionRef *callback) = inArguments;
+    UEX_PARAM_GUARD_NOT_NIL(callback);
+    [self checkAuthorizationSuccess:^{
+        self.openCallback = callback;
+        if (!self.openController) {
+            self.openController = [[ABPeoplePickerNavigationController alloc] init];
+            self.openController.peoplePickerDelegate = self;
         }
-        if ([option objectForKey:@"isSearchCompany"] != nil) {
-            contact.isSearchCompany = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchCompany"]boolValue]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self.webViewEngine viewController] presentViewController:self.openController animated:YES completion:nil];
+        });
+    } failure:^(uexContactActionBlock showAlert) {
+        [callback executeWithArguments:ACArgsPack(AUTH_ERROR)];
+        showAlert();
+    }];
+    
+    
+
+}
+
+
+
+
+
+
+
+
+
+
+
+- (void)addItem:(NSMutableArray *)inArguments {
+    ACArgsUnpack(NSString *name,NSString *phoneNumber,NSString *email,NSDictionary *options) = inArguments;
+    ACJSFunctionRef *callback = JSFunctionArg(inArguments.lastObject);
+    UEX_PARAM_GUARD_NOT_NIL(name);
+    BOOL isNeedShowAlert = numberArg(options[@"isNeedAlertDialog"]).boolValue;
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    
+    uexContactActionBlock addItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
         }
-        if ([option objectForKey:@"isSearchEmail"] != nil) {
-            contact.isSearchEmail = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchEmail"]boolValue]];
-        }
-        if ([option objectForKey:@"isSearchNote"] != nil) {
-            contact.isSearchNote = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNote"]boolValue]];
-        }
-        if ([option objectForKey:@"isSearchNum"] != nil) {
-            contact.isSearchNum = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchNum"]boolValue]];
-        }
-        if ([option objectForKey:@"isSearchTitle"] != nil) {
-            contact.isSearchTitle = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchTitle"]boolValue]];
-        }
-        if ([option objectForKey:@"isSearchUrl"] != nil) {
-            contact.isSearchUrl = [NSString stringWithFormat:@"%d",[[option objectForKey:@"isSearchUrl"]boolValue]];
-        }
-        if ([option objectForKey:@"contactId"] != nil) {
-            contactId = [[option objectForKey:@"contactId"]intValue];
-        }
-        if ([option objectForKey:@"searchName"] != nil) {
-            _searchName = [NSString stringWithFormat:@"%@",[option objectForKey:@"searchName"]];
+        ABRecordRef person = ABPersonCreate();
+        ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)name, NULL);
+        ABPersonSetPhoneNumber(person, phoneNumber);
+        ABPersonSetEmail(person, email);
+        ret = ABAddressBookAddRecord(addressBook, person, NULL) && ABAddressBookSave(addressBook, NULL);
+        CFRelease(person);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+        if (isNeedShowAlert) {
+            [self showAlertViewWithMessage:@"应用程序需要添加联系人信息，是否确认添加？" confirmAction:addItem cancalAction:^{
+                execCallback(uexErrorMake(-1));
+            }];
         }else{
-            _searchName = @"";
+            addItem();
         }
-        if (contactId > 0) {
-            NSString *jsonResult =[contact search:contactId];
-            
-            if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-               // NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
-                //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                NSDictionary *resultDic = [jsonResult ac_JSONValue];
-                if ([resultDic[@"result"] isEqualToString:@"0"]) {
-                  [func executeWithArguments:ACArgsPack(@(0),resultDic[@"contactList"])];
-                }else{
-                  [func executeWithArguments:ACArgsPack(@(1),nil)]; 
-                }
-                
-                func = nil;
-            } else {
-                //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
-               // [EUtility brwView:meBrwView evaluateScript:jsonStr];
-                [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(@"")];
-                [func executeWithArguments:ACArgsPack(@(1),nil)];
-                func = nil;
-            }
-        }
-        else
-        {
-            NSString *inName =[NSString stringWithFormat:@"%@",_searchName];
-            if (0 == [inName length]) {//传入名字为空时，就查找所有联系人
-                NSMutableArray * array = [contact searchItem_all];
-                if ([array isKindOfClass:[NSMutableArray class]] && [array count] > 0) {
-                    int count = (int)[array count];
-                    NSRange range;
-                    if (resultNum >0) {
-                        range = NSMakeRange(0, resultNum);
-                    }
-                    else if (resultNum == -1) {
-                        range = NSMakeRange(0, count);
-                    }
-                    else{
-                        range = NSMakeRange(0, 50);
-                    }
-                    NSArray * subArray = [array subarrayWithRange:range];
-                    if ([subArray isKindOfClass:[NSArray class]] && [subArray count] > 0) {
-                        NSString * jsonResult = [subArray ac_JSONFragment];
-                        if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                            //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
-                            //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                            [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                            [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
-                            func = nil;
-                            
-                        } else {
-                            //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
-                            //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                            [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(@"")];
-                            [func executeWithArguments:ACArgsPack(@(1),nil)];
-                            func = nil;
-                        }
-                    }
-                }
-            } else {
-                NSString * jsonResult = [contact searchItem:inName resultNum:resultNum];
-                if ([jsonResult isKindOfClass:[NSString class]] && jsonResult.length>0) {
-                   // NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",jsonResult];
-                    //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                    [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                    [func executeWithArguments:ACArgsPack(@(0),[jsonResult ac_JSONValue])];
-                    func = nil;
-                    
-                } else {
-                    //NSString *jsonStr = [NSString stringWithFormat:@"if(uexContact.cbSearch != null){uexContact.cbSearch(%@)}",@""];
-                    //[EUtility brwView:meBrwView evaluateScript:jsonStr];
-                    [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(jsonResult)];
-                    [func executeWithArguments:ACArgsPack(@(1),nil)];
-                    func = nil;
-                }
-            }
-            
+
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+    
+
+}
+
+- (void)addItemWithVCard:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSString *vCardStr,NSNumber *type) = inArguments;
+    ACJSFunctionRef *callback = JSFunctionArg(inArguments.lastObject);
+    BOOL isNeedShowAlert = type.integerValue != 1;
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbAddItem" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    uexContactActionBlock addItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
         }
         
-    }
-    else
-    {
-        [self showAlertViewMessage];
-    }
-}
--(void)modifyWithId:(NSMutableArray *)inArguments{
-    ACJSFunctionRef *fuc = JSFunctionArg(inArguments.lastObject);
-    self.fun = fuc;
-    if ([self check_Authorization]) {
-        actionArray = [[NSArray alloc]initWithArray:inArguments];
-        [self showAlertView:@"应用程序需要修改联系人信息，是否确认修改？" alertID:666];
-    } else {
-        [self showAlertViewMessage];
-    }
-}
--(void)modifyItemWithId:(NSArray *)array{
-    NSDictionary *diction = [[array objectAtIndex:0] ac_JSONValue];
-    int recordId = [[NSString stringWithFormat:@"%@",[diction objectForKey:@"contactId"]] intValue];
-    NSString *name = [NSString stringWithFormat:@"%@",[diction objectForKey:@"name"]];
-    NSString *num  = [NSString stringWithFormat:@"%@",[diction objectForKey:@"num"]];
-    NSString *email = [NSString stringWithFormat:@"%@",[diction objectForKey:@"email"]];
-    BOOL result =[contact modifyItemWithId:recordId Name:name phoneNum:num phoneEmail:email];
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbModifyWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyWithId" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
-        self.fun = nil;
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbModifyWithId" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyWithId" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-        self.fun = nil;
-    }
-}
--(void)modifyItem:(NSMutableArray *)inArguments {
-     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    self.fun = func;
-    if ([self check_Authorization]) {
-        actionArray = [[NSArray alloc] initWithArray:inArguments];
-        [self showAlertView:@"应用程序需要修改联系人信息，是否确认修改？" alertID:333];
-    } else {
-        [self showAlertViewMessage];
-    }
-}
-
-
-//修改多个号码的联系人
--(void)modifyMultiItem:(NSMutableArray *)inArguments{
-    if ([self check_Authorization]) {
-        actionArray = [[NSArray alloc] initWithArray:inArguments];
-        [self showAlertView:@"应用程序需要修改联系人信息，是否确认修改？" alertID:444];
-    } else {
-        [self showAlertViewMessage];
-    }
-}
--(void)modifyMultiItemWithArray:(NSArray *)inArguments{
-    BOOL result = [contact  modifyMulti:(NSMutableArray *)inArguments];
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
+        CFDataRef vCardData = (__bridge CFDataRef)[vCardStr dataUsingEncoding:NSUTF8StringEncoding];
+        ABRecordRef defaultSource = ABAddressBookCopyDefaultSource(addressBook);
+        CFArrayRef vCardPeople = ABPersonCreatePeopleInSourceWithVCardRepresentation(defaultSource, vCardData);
+        for (CFIndex index = 0; index < CFArrayGetCount(vCardPeople); index++) {
+            ABRecordRef person = CFArrayGetValueAtIndex(vCardPeople, index);
+            ABAddressBookAddRecord(addressBook, person, NULL);
+            CFRelease(person);
+        }
+        ret = ABAddressBookSave(addressBook, NULL);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+        if (isNeedShowAlert) {
+            [self showAlertViewWithMessage:@"应用程序需要添加联系人信息，是否确认添加？" confirmAction:addItem cancalAction:^{
+                execCallback(uexErrorMake(-1));
+            }];
+        }else{
+            addItem();
+        }
         
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-    }
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+}
+
+
+- (void)deleteItem:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSString *name,ACJSFunctionRef *callback) = inArguments;
+    
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    uexContactActionBlock deleteItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
+        }
+        CFArrayRef people = ABAddressBookCopyPeopleWithName(addressBook,(__bridge CFStringRef)name);
+        if (CFArrayGetCount(people) > 0) {
+            ABRecordRef person = CFArrayGetValueAtIndex(people, 0);
+            ret = ABAddressBookRemoveRecord(addressBook, person, NULL) && ABAddressBookSave(addressBook, NULL);
+        }
+        CFRelease(people);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+            [self showAlertViewWithMessage:@"应用程序需要删除联系人信息，是否确认删除？" confirmAction:deleteItem cancalAction:^{
+                execCallback(uexErrorMake(-1));
+            }];
+
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+
+}
+
+- (void)deleteWithId:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSDictionary *info,ACJSFunctionRef *callback) = inArguments;
+    NSString *contactId = stringArg(info[@"contactId"]);
+    UEX_PARAM_GUARD_NOT_NIL(contactId);
+    
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbDeleteItem" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    uexContactActionBlock deleteItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
+        }
+        ABRecordRef person = ABAddressBookGetPersonWithRecordID(addressBook, contactId.intValue);
+        ret = ABAddressBookRemoveRecord(addressBook, person, NULL) && ABAddressBookSave(addressBook, NULL);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+        [self showAlertViewWithMessage:@"应用程序需要删除联系人信息，是否确认删除？" confirmAction:deleteItem cancalAction:^{
+            execCallback(uexErrorMake(-1));
+        }];
+        
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+
+}
+
+
+- (void)searchItem:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSString *name,NSDictionary *info) = inArguments;
+    ACJSFunctionRef *callback = JSFunctionArg(inArguments.lastObject);
+    
+    void (^execCallback)(UEX_ERROR,NSArray *) = ^(UEX_ERROR error, NSArray *result){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearchItem" arguments:ACArgsPack(@0,@1,(error.integerValue == 0) ? result.ac_JSONFragment : @"")];
+        [callback executeWithArguments:ACArgsPack(error,result)];
+    };
+    uexContactActionBlock searchItem = ^{
+        __block UEX_ERROR error = kUexNoError;
+        NSMutableArray *result = [NSMutableArray array];
+        @onExit{
+            execCallback(error,result);
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            error = uexErrorMake(1);
+            return;
+        }
+        NSInteger count = [numberArg(info[@"resultNum"]) integerValue];
+        count = count > 0 ? count : 50;
+        CFArrayRef items;
+        if (name.length > 0) {
+            items = ABAddressBookCopyPeopleWithName(addressBook, (__bridge CFStringRef)name);
+        }else{
+            items = ABAddressBookCopyArrayOfAllPeople(addressBook);
+        }
+        count = MIN(count, CFArrayGetCount(items));
+        UexContactPersonSearchOptions options = [self optionsFromDict:info];
+        for (NSInteger i = 0; i < count; i++) {
+            ABRecordRef person = CFArrayGetValueAtIndex(items, i);
+            [result addObject:ABPersonParseWithOptions(person, options)];
+        }
+        CFRelease(items);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:searchItem
+                            failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1),nil);
+        showAlert();
+    }];
     
 }
 
--(void)modifyItemWithName:(NSString *)inName phoneNum:(NSString *)inNum phoneEmail:(NSString *)inEmail{
+- (void)search:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSDictionary *info) = inArguments;
+    ACJSFunctionRef *callback = JSFunctionArg(inArguments.lastObject);
     
-    BOOL result = [contact modifyItem:inName phoneNum:inNum phoneEmail:inEmail];
+    void (^execCallback)(UEX_ERROR,NSArray *) = ^(UEX_ERROR error, NSArray *result){
+        NSMutableDictionary *cbSearch = [NSMutableDictionary dictionary];
+        [cbSearch setValue:error forKey:@"result"];
+        [cbSearch setValue:result forKey:@"contactList"];
+        
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbSearch" arguments:ACArgsPack(cbSearch.ac_JSONFragment)];
+        [callback executeWithArguments:ACArgsPack(error,result)];
+    };
+    uexContactActionBlock searchItem = ^{
+        __block UEX_ERROR error = kUexNoError;
+        NSMutableArray *result = [NSMutableArray array];
+        @onExit{
+            execCallback(error,result);
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            error = uexErrorMake(1);
+            return;
+        }
+        @onExit{
+            CFRelease(addressBook);
+        };
+        
+        NSString *contactId = stringArg(info[@"contactId"]);
+        NSString *name = stringArg(info[@"searchName"]);
+        UexContactPersonSearchOptions options = [self optionsFromDict:info];
+        NSInteger count = [numberArg(info[@"resultNum"]) integerValue];
+        count = count > 0 ? count : 50;
+        
+        if (contactId.length > 0) {
+            ABRecordRef person = ABAddressBookGetPersonWithRecordID(addressBook, contactId.intValue);
+            if (person) {
+                [result addObject:ABPersonParseWithOptions(person, options)];
+            }
+            return;
+        }
+        
+        
+        CFArrayRef items;
+        if (name.length > 0) {
+            items = ABAddressBookCopyPeopleWithName(items, (__bridge CFStringRef)name);
+        }else{
+            items = ABAddressBookCopyArrayOfAllPeople(addressBook);
+        }
+        count = MIN(count, CFArrayGetCount(items));
+        
+        for (NSInteger i = 0; i < count; i++) {
+            ABRecordRef person = CFArrayGetValueAtIndex(items, i);
+            [result addObject:ABPersonParseWithOptions(person, options)];
+        }
+        CFRelease(items);
+        
+    };
     
-    if (result == NO){
-        //失败
-        //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@1)];
-        [self.fun executeWithArguments:ACArgsPack(@(1))];
-        self.fun = nil;
-    } else {
-        //[self jsSuccessWithName:@"uexContact.cbModifyItem" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,@0)];
-        [self.fun executeWithArguments:ACArgsPack(@(0))];
-        self.fun = nil;
-    }
+    [self checkAuthorizationSuccess:searchItem
+                            failure:^(uexContactActionBlock showAlert) {
+                                execCallback(uexErrorMake(1),nil);
+                                showAlert();
+                            }];
 }
 
--(void)multiOpen:(NSMutableArray*)inArguments{
+
+
+- (void)modifyWithId:(NSMutableArray *)inArguments{
+    ACArgsUnpack(NSDictionary *info,ACJSFunctionRef *callback) = inArguments;
+    NSString *contactId = stringArg(info[@"contactId"]);
+    UEX_PARAM_GUARD_NOT_NIL(contactId);
+    
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyWithId" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    uexContactActionBlock modifyItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
+        }
+        ABRecordRef person = ABAddressBookGetPersonWithRecordID(addressBook, contactId.intValue);
+        if (!person) {
+            return;
+        }
+        NSString *name = stringArg(info[@"name"]);
+        NSString *phoneNumber = stringArg(info[@"number"]);
+        NSString *email = stringArg(info[@"email"]);
+        
+        ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)name, NULL);
+        ABPersonSetPhoneNumber(person, phoneNumber);
+        ABPersonSetEmail(person, email);
+        ret = ABAddressBookAddRecord(addressBook, person, NULL) && ABAddressBookSave(addressBook, NULL);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+        [self showAlertViewWithMessage:@"应用程序需要修改联系人信息，是否确认修改？" confirmAction:modifyItem cancalAction:^{
+            execCallback(uexErrorMake(-1));
+        }];
+        
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+}
+
+
+- (void)modifyItem:(NSMutableArray *)inArguments{
+
+    ACArgsUnpack(NSString *name,NSString *phoneNumber,NSString *email) = inArguments;
+    ACJSFunctionRef *callback = JSFunctionArg(inArguments.lastObject);
+
+    UEX_PARAM_GUARD_NOT_NIL(name);
+    
+    void (^execCallback)(UEX_ERROR) = ^(UEX_ERROR error){
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbModifyItem" arguments:ACArgsPack(@0,@2,(error.integerValue == 0) ? @0 : @1)];
+        [callback executeWithArguments:ACArgsPack(error)];
+    };
+    uexContactActionBlock modifyItem = ^{
+        __block BOOL ret = NO;
+        @onExit{
+            execCallback(ret ? kUexNoError : uexErrorMake(1));
+        };
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        if (!addressBook) {
+            return;
+        }
+
+        
+        CFArrayRef items = ABAddressBookCopyPeopleWithName(addressBook, (__bridge CFStringRef)name);
+        if (!items || CFArrayGetCount(items) == 0) {
+            return;
+        }
+        ABRecordRef person = CFArrayGetValueAtIndex(items, 0);
+        ABPersonSetPhoneNumber(person, phoneNumber);
+        ABPersonSetEmail(person, email);
+        ret = ABAddressBookAddRecord(addressBook, person, NULL) && ABAddressBookSave(addressBook, NULL);
+        CFRelease(addressBook);
+    };
+    
+    [self checkAuthorizationSuccess:^{
+        [self showAlertViewWithMessage:@"应用程序需要修改联系人信息，是否确认修改？" confirmAction:modifyItem cancalAction:^{
+            execCallback(uexErrorMake(-1));
+        }];
+        
+    } failure:^(uexContactActionBlock showAlert) {
+        execCallback(uexErrorMake(1));
+        showAlert();
+    }];
+}
+
+- (void)modifyMultiItem:(NSMutableArray *)inArguments{
+    ACLogError(@"uexContact.modifyMultiItem() is obsoleted!");
+}
+
+
+- (void)multiOpen:(NSMutableArray*)inArguments{
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
-    if ([self check_Authorization]) {
-        PeopleContactViewController* contactView = [[PeopleContactViewController alloc] init];
+    
+    [self checkAuthorizationSuccess:^{
+        PeopleContactViewController *contactView = [[PeopleContactViewController alloc] init];
         contactView.callBack = self;
         contactView.func = func;
-        UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:contactView];
-        //[EUtility brwView:[super meBrwView] presentModalViewController:nav animated:(BOOL)YES];
-        [[[super webViewEngine] viewController] presentViewController:nav animated:YES completion:nil];
-        //[nav release];
-        //[contactView release];
-    } else {
-        [self showAlertViewMessage];
-    }
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactView];
+        [[self.webViewEngine viewController] presentViewController:nav animated:YES completion:nil];
+
+    } failure:^(uexContactActionBlock showAlert) {
+        showAlert();
+    }];
+
 }
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex == 1) {
-        switch (alertView.tag) {
-            case 111:
-                [self addItemWithName:[actionArray objectAtIndex:0] phoneNum:[actionArray objectAtIndex:1] phoneEmail:[actionArray objectAtIndex:2]];
-                break;
-            case 112:
-                [self addItemWithVCard_String:[actionArray objectAtIndex:0]];
-                break;
-            case 222:
-                [self deleteItemWithName:[actionArray objectAtIndex:0]];
-                break;
-            case 333:
-                [self modifyItemWithName:[actionArray objectAtIndex:0] phoneNum:[actionArray objectAtIndex:1] phoneEmail:[actionArray objectAtIndex:2]];
-                break;
-            case 444:
-                [self modifyMultiItemWithArray:actionArray];
-                break;
-            case 555:
-                [self deleteItemWithID:recordID];
-                break;
-            case 666:
-                [self modifyItemWithId:actionArray];
-                break;
-            default:
-                break;
-        }
-    }
-    if (actionArray) {
-        //[actionArray release];
-        actionArray = nil;
-    }
-}
-
--(void)uexOpenSuccessWithOpId:(int)inOpId dataType:(int)inDataType data:(NSString *)inData{
-    if (inData) {
-        //[self jsSuccessWithName:@"uexContact.cbOpen" opId:inOpId dataType:inDataType strData:inData];
-        [self.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbOpen" arguments:ACArgsPack(@(inOpId),@(inDataType),inData)];
-        [self.fun executeWithArguments:ACArgsPack(@(0),[inData ac_JSONValue])];
-    }else{
-        [self.fun executeWithArguments:ACArgsPack(@(1),nil)];
-    }
-         self.fun = nil;
-}
-
+ 
 @end

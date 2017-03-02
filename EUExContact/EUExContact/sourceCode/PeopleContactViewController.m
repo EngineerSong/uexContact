@@ -23,11 +23,24 @@
 @synthesize mySearchBar;
 @synthesize toolBar;
 @synthesize callBack;
+
+
+#define UEX_JKNAME			@"name"
+#define UEX_JKNUM			@"num"
+#define UEX_JKEMAIL			@"email"
+
+//add
+#define UEX_JKADR			@"address"
+#define UEX_JKORG			@"company"
+#define UEX_JKTITLE			@"title"
+#define UEX_JKURL			@"url"
+#define UEX_JKNOTE			@"note"
+#define UEX_JKRECODEID      @"contactId"
+
 #pragma mark -
 #pragma mark init data
 -(void)doCallBack:(NSString*)jsonString{
 	if (callBack) {
-		//[callBack jsSuccessWithName:@"uexContact.cbMultiOpen" opId:0 dataType:1 strData:jsonString];
         [callBack.webViewEngine callbackWithFunctionKeyPath:@"uexContact.cbMultiOpen" arguments:ACArgsPack(@0,@1,jsonString)];
         [self.func executeWithArguments:ACArgsPack(@(0),[jsonString ac_JSONValue])];
         
@@ -48,15 +61,13 @@
 			NSArray* array = [names objectForKey:key];
 			NSInteger len = [array count];
 			for (NSInteger j = 0;j < len; j++) {
-				[selectNames setObject:value forKey:[NSString stringWithFormat:@"%dX%d",i,j]];
+				[selectNames setObject:value forKey:[NSString stringWithFormat:@"%ldX%ld",(long)i,(long)j]];
 			}
 		}
 	}
 }
 
 -(void)initPeoples{
-	//ABAddressBookRef addressBook = ABAddressBookCreate();
-//    ABAddressBookRef addressBook = nil;
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0){
         addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
         //等待同意后向下执行
@@ -66,7 +77,6 @@
                                                      dispatch_semaphore_signal(sema);
                                                  });
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        dispatch_release(sema);
     }else{
         addressBook = ABAddressBookCreate();
     }
@@ -82,7 +92,6 @@
 		if (record) {
 			NSString *name = (__bridge NSString *)ABRecordCopyCompositeName(record);
 			char letter = [name ChinesePinyinHeadLetter];
-            //[name release];
 			[keyArray insertObject:[[NSString alloc] initWithFormat:@"%c",letter] atIndex:i];
 		}
 	}
@@ -98,12 +107,10 @@
     if (!self.keys) {
        NSMutableArray *array = [[NSMutableArray alloc]initWithCapacity:1];
         self.keys = array;
-        //[array release];
     }
     [self.keys setArray:kk];
 	self.names = [allPeoples mutableDeepCopy];
 	[self initSelectNames:@"0"];
-//    CFRelease(addressBook);
 }
 
 #pragma mark -
@@ -117,7 +124,6 @@
 		[nameStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		[dict setObject:nameStr forKey:UEX_JKNAME];
 	}
-    //[nameStr release];
     //电话
     ABMultiValueRef phone = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonPhoneProperty);
 	NSString *personPhone =nil;
@@ -146,7 +152,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKEMAIL];
 	}
-    //[emailStr release];
     //address
     ABMultiValueRef addresses = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonAddressProperty);
  	NSDictionary *addressDict = nil;
@@ -159,7 +164,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKADR];
 	}
-    //[addressDict release];
     
     //company
     NSString *companyStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonOrganizationProperty);
@@ -168,8 +172,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKORG];
 	}
-    //[companyStr release];
-    
     //title
     NSString *titleStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonJobTitleProperty);
     if (titleStr != nil) {
@@ -177,8 +179,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKTITLE];
 	}
-    //[titleStr release];
-    
     //url
     ABMultiValueRef urls = (ABMultiValueRef)ABRecordCopyValue(person, kABPersonURLProperty);
  	NSString *urlStr = nil;
@@ -191,7 +191,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKURL];
 	}
-    //[urlStr release];
     
     //note
     NSString *noteStr=(__bridge NSString*)ABRecordCopyValue(person, kABPersonNoteProperty);
@@ -200,7 +199,6 @@
 	}else {
 		[dict setObject:@"" forKey:UEX_JKNOTE];
 	}
-    //[noteStr release];
 }
 
 -(void)confirmButtonClick{
@@ -225,7 +223,6 @@
                         //返回数据
                         [self setDataDict:person withInDict:selectPeople];
 						[selectPeoples addObject:selectPeople];
-						//[selectPeople release];
 					}					
 				}
 			}
@@ -235,11 +232,9 @@
     if ([selectPeoples count]>0) {
         resultJson = [selectPeoples ac_JSONFragment];
     }
-    NSLog(@"jsstr = %@",resultJson);
-    //[selectPeoples release];
     [self doCallBack:resultJson];
     
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 -(void)allSelectButtonClick{
 	[self initSelectNames:@"1"];
@@ -253,40 +248,34 @@
 }
 
 -(void)initToolbar{
-	//CGFloat width =  self.view.frame.size.width;
 	CGSize size = [[UIScreen mainScreen] bounds].size;
-    int autoSize = 0;
-    float systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    int autoSize = 40;
+
     int style = UIBarStyleDefault;
-    if (systemVersion < 7.0) {
-        autoSize = 108;
-        style =UIBarButtonItemStyleBordered;
-    }else{
-        autoSize = 40;
-        style = UIBarStyleDefault;
-    }
+
+
+    
 	toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, size.height-autoSize, size.width, 40)];
 	toolBar.barStyle = style;
 	toolBar.backgroundColor = [UIColor clearColor];
-//	toolBar.barStyle = UIBarButtonItemStylePlain;
 	[toolBar sizeToFit];
 	toolBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;//这句作用是切换时宽度自适应.
     
     UIBarButtonItem *allSelectBarItem = [[UIBarButtonItem alloc] init];
     [allSelectBarItem setTitle:@"全选"];
-    [allSelectBarItem setStyle:UIBarButtonItemStyleBordered];
+    [allSelectBarItem setStyle:UIBarButtonItemStylePlain];
     [allSelectBarItem setTarget:self];
     [allSelectBarItem setAction:@selector(allSelectButtonClick)];
     
     UIBarButtonItem *cancelSelectBarItem = [[UIBarButtonItem alloc] init];
     [cancelSelectBarItem setTitle:@"取消全选"];
-    [cancelSelectBarItem setStyle:UIBarButtonItemStyleBordered];
+    [cancelSelectBarItem setStyle:UIBarButtonItemStylePlain];
     [cancelSelectBarItem setTarget:self];
     [cancelSelectBarItem setAction:@selector(CancelAllSelectButtonClick)];
     
     UIBarButtonItem *confirmBarItem = [[UIBarButtonItem alloc] init];
     [confirmBarItem setTitle:@"确定"];
-    [confirmBarItem setStyle:UIBarButtonItemStyleBordered];
+    [confirmBarItem setStyle:UIBarButtonItemStylePlain];
     [confirmBarItem setTarget:self];
     [confirmBarItem setAction:@selector(confirmButtonClick)];
     
@@ -301,7 +290,6 @@
 #pragma mark UISearchBarDelegate
 - (void)resetSearch {
 	self.names = [allPeoples mutableDeepCopy];
-	NSLog(@"%@",names);
 	NSArray* kk = [[allPeoples allKeys] sortedArrayUsingSelector:@selector(compare:)];
 	keys = [[NSMutableArray alloc]initWithArray:kk];
 	if (isEditableOrNot) {
@@ -314,31 +302,28 @@
     [self resetSearch];
 	
     for (NSString *key in keys) {
-		NSLog(@"%@",key);
+
         NSMutableArray *array = [names valueForKey:key];
         NSMutableArray *toRemove = [[NSMutableArray alloc] init];
 		NSInteger count = [array count];
 		for (NSUInteger i = 0;i < count;i++){
-//			NSMutableArray* array = [allPeoples objectForKey:[keyArray objectAtIndex:i]];
 			ABRecordRef record = (__bridge ABRecordRef)([array objectAtIndex:i]);
 			NSString* name = (__bridge NSString *)ABRecordCopyCompositeName(record);
-			NSLog(@"%@",name);
+
             if ([name rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location == NSNotFound)
 			{
 				if ([[name ChinesePinyin] rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location == NSNotFound) {
 					[toRemove addObject:(__bridge id _Nonnull)((void*)record)];	
 				}				
 			}
-            //[name release];
 		}
         if ([array count] == [toRemove count])
             [sectionsToRemove addObject:key];
 		
         [array removeObjectsInArray:toRemove];
-        //[toRemove release];
+
     }
     [keys removeObjectsInArray:sectionsToRemove];
-    //[sectionsToRemove release];
     [table reloadData];
 }
 
@@ -402,7 +387,7 @@
 }
 
 - (IBAction)backBtnClicked{
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)initTitleBar{
@@ -420,12 +405,12 @@
 	titleLabel.font = [UIFont boldSystemFontOfSize:18];
 	titleLabel.frame = CGRectMake(0.0, 0.0,160, 22.0);
 	titleLabel.text = @"所有联系人";
-	titleLabel.textAlignment = UITextAlignmentCenter;
+	titleLabel.textAlignment = NSTextAlignmentCenter;
 	self.navigationItem.titleView = titleLabel;
     //[titleLabel release];
 //	self.navigationItem.title = @"所有联系人";
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(backBtnClicked)];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(rightButtonClick:)];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backBtnClicked)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStylePlain target:self action:@selector(rightButtonClick:)];
 	self.navigationController.navigationBar.tintColor = [UIColor blackColor];  
 }
 
@@ -513,7 +498,7 @@
     if (keys && names) {
         NSString* key = [keys objectAtIndex:section];
         NSArray* value = [names objectForKey:key];
-        NSLog(@"%@",value);
+
         return [value count];
     }else{
         return 0;
@@ -542,25 +527,28 @@
         //[nameStr release];
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    NSBundle *bundle = [NSBundle ac_bundleForPlugin:@"uexContact"];
+    
 	if(isEditableOrNot) {  
 		NSString* bk = [NSString stringWithFormat:@"%ldX%ld",(long)section,(long)row];
 		NSString* bString = [selectNames objectForKey:bk];
 		NSInteger b = bString ? [bString intValue]:0;
 		if (b) {
-			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
+			UIImage *image = [UIImage imageWithContentsOfFile:[[bundle resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
             //[imageView release];
 		}
 		else {
-            UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
+            UIImage *image = [UIImage imageWithContentsOfFile:[[bundle resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
             UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
             cell.accessoryView = imageView;
             //[imageView release];
 			//cell.accessoryView = nil;
 		}
 	}else {
-        UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[[bundle resourcePath] stringByAppendingPathComponent: @"plugin_contacts_cb_normal.png"]];
         UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
         cell.accessoryView = imageView;
         //[imageView release];
@@ -637,7 +625,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if(isEditableOrNot && selectNames) {  
 		UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-		NSString* key = [NSString stringWithFormat:@"%ldX%ld",indexPath.section,indexPath.row];
+		NSString* key = [NSString stringWithFormat:@"%ldX%ld",(long)indexPath.section,(long)indexPath.row];
 		NSString* bString = [selectNames objectForKey:key];
 		NSInteger b = bString ? [bString intValue]:0;
 		if (b) {
@@ -647,10 +635,9 @@
 			[tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationNone];
 		}
 		else {
-			UIImage *image = [UIImage imageWithContentsOfFile:[[UEX_BUNDLE resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
+			UIImage *image = [UIImage imageWithContentsOfFile:[[[NSBundle ac_bundleForPlugin:@"uexContact"] resourcePath] stringByAppendingPathComponent: @"plugin_contact_selected.png"]];
 			UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
 			cell.accessoryView = imageView;
-            //[imageView release];
 			[selectNames setObject:@"1" forKey:key];
 		} 
 

@@ -7,7 +7,5 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
-    #import "EUtility.h"
     #import <AppCanKit/AppCanKit.h>
-    #define UEX_BUNDLE [NSBundle ac_bundleForPlugin:@"uexContact"]
 #endif
