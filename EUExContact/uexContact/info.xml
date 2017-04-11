@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexContact" version="4.0.1" build="1">
-        <info>1:修复bugs</info>
+        uexName="uexContact" version="4.0.2" build="2">
+        <info>2:修复search和searchItem不能返回全部联系人的问题</info>
+        <build>1:修复bugs</build>
         <build>0:联系人功能插件</build>
     </plugin>
 </uexplugins>

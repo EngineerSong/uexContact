@@ -629,6 +629,9 @@ static BOOL ABPersonSetNote(ABRecordRef person,NSString *note){
             return;
         }
         NSInteger count = [numberArg(info[@"resultNum"]) integerValue];
+        if (count == -1) {
+            count = NSIntegerMax;
+        }
         count = count > 0 ? count : 50;
         CFArrayRef items;
         if (name.length > 0) {
@@ -686,6 +689,9 @@ static BOOL ABPersonSetNote(ABRecordRef person,NSString *note){
         NSString *name = stringArg(info[@"searchName"]);
         UexContactPersonSearchOptions options = [self optionsFromDict:info];
         NSInteger count = [numberArg(info[@"resultNum"]) integerValue];
+        if (count == -1) {
+            count = NSIntegerMax;
+        }
         count = count > 0 ? count : 50;
         
         if (contactId.length > 0) {
@@ -703,6 +709,7 @@ static BOOL ABPersonSetNote(ABRecordRef person,NSString *note){
         }else{
             items = ABAddressBookCopyArrayOfAllPeople(addressBook);
         }
+
         count = MIN(count, CFArrayGetCount(items));
         
         for (NSInteger i = 0; i < count; i++) {
